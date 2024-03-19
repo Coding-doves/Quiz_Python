@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Quiz It</title>
+</head>
+<body>
+    <h1>Quiz It</h1>
+    <div class="main">
+        <form action="/submit" method="post">
+            <!--{% for question in questions %}-->
+            <div class="box">
+                <section>
+                    <p><!--{{ question.question }}--></p>
+                </section>
+                <section>
+                    <!-- {% for option_idx in range(question.options|length) %}
+                    <input type="radio" name="opt{{ loop.index }}" id="opt{{ loop.index }}_{{ option_idx }}" value="{{ option }}">
+                    <label for="opt{{ loop.index }}_{{ option_idx }}">{{ question.options[option_idx] }}</label><br>
+                    {% endfor%}-->
+                </section>
+                
+            </div>
+            <!--{% endfor %}-->
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    
+
+    <script src="static/js/script.js"></script>
+</body>
+</html>
