@@ -10,20 +10,20 @@
     <h1>Quiz It</h1>
     <div class="main">
         <form action="/submit" method="post">
-            <!--{% for question in questions %}-->
+            {% for question in questions %}
             <div class="box">
                 <section>
-                    <p><!--{{ question.question }}--></p>
+                    <p>{{ question.question }}</p>
                 </section>
                 <section>
-                    <!-- {% for option_idx in range(question.options|length) %}
+                    {% for option_idx in range(question.options|length) %}
                     <input type="radio" name="opt{{ loop.index }}" id="opt{{ loop.index }}_{{ option_idx }}" value="{{ option }}">
                     <label for="opt{{ loop.index }}_{{ option_idx }}">{{ question.options[option_idx] }}</label><br>
-                    {% endfor%}-->
+                    {% endfor%}
                 </section>
                 
             </div>
-            <!--{% endfor %}-->
+            {% endfor %}
             <button type="submit">Submit</button>
         </form>
     </div>

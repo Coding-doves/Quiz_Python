@@ -12,7 +12,7 @@ class Quiz:
 
     def fetch_quiz(self):
         '''fetch questions from the API'''
-        question_options = []
+        question_option = []
 
         try:
             response = requests.get(self.api_url)
@@ -26,25 +26,38 @@ class Quiz:
                     question = data.get("question", {}).get("text")
                     correct_ans = data.get("correctAnswer")
                     incorrect_ans = data.get("incorrectAnswers", [])
-                    question_options.append((question, correct_ans, incorrect_ans))
-                return question_options
+                    
+                    options = [correct_ans] + incorrect_ans
+                    random.shuffle(options)
+
+                    question_data = {
+                        "question": question,
+                        "options": options,
+                    }
+                    # convert data to list before using random(takes sequence/list)
+                    # random.shuffle(question_data)
+
+                    question_option.append(question_data)
+                
+                return question_option
             
         except requests.exceptions.RequestException as e:
             print("Failed to fetch questions from the API:", e)
             return {}
 
+    '''
     def display_quiz(self, que, ans):
-        '''prints questions with options to the console'''
+        ''prints questions with options to the console''
         print(que)
         for i, a in enumerate(ans):
             print(f'- {a}')
 
     def check_ans(self, usr_inpt, correct_ans):
-        ''' checking if user enter the correct answer'''
+        '' checking if user enter the correct answer''
         return usr_inpt.lower() == correct_ans.lower()
 
     def run_quiz(self):
-        '''displays the questions'''
+        ''displays the questions''
         if not self.questions:
             print("No questions available at this time.")
             return
@@ -52,17 +65,26 @@ class Quiz:
         # convert data to list before using random(takes sequence/list)
         random.shuffle(self.questions)
 
-        for que, correct_ans, incorrect_ans in self.questions:
-            options = [correct_ans] + incorrect_ans # shuffle option list
+        for data in self.questions:
+            question = data['question']
+            correct = data['correct_answer']
+            incorrect = data['incorrect_answers']
+
+            options = [correct] + incorrect # shuffle option list
             random.shuffle(options)
-            self.display_quiz(que, options)
+
+            question_options = {
+                'question': question,
+                'options': options
+            }
+
+            self.display_quiz(question_options["question"], question_options["options"])
             user_input = input('Enter answer: ')
 
-            if self.check_ans(user_input, correct_ans):
-                print("correct")
+            if self.check_ans(user_input, correct):
                 self.score += 1
-
-        print(f"You scored {self.score} out of {len(self.questions)}.")
+        '''
+        # print(f"You scored {self.score} out of {len(self.questions)}.")
 
 # api endpoint
 api_url = "https://the-trivia-api.com/v2/questions"
