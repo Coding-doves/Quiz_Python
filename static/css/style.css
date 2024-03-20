@@ -38,7 +38,7 @@ form{
     padding: 0.9rem;
 }
 .box{
-    height: 26rem;
+    height: 23rem;
     width: 100%;
     padding: 1rem;
     margin: 0.7rem;
@@ -54,11 +54,13 @@ form{
     position: absolute; 
     border-radius: 8px;
     padding: 1.4rem;
+    font-size: 1rem;
+    line-height: 1.8rem;
 }
 .box section:nth-child(1){
     top: 1.6rem;
-    left: 17rem;
-    height: 15rem;
+    left: 19rem;
+    height: 10rem;
     width: 25rem;
     z-index: 1;
     background-color: rgba(0, 255, 255, 0.14);
@@ -67,16 +69,18 @@ form{
     backdrop-filter: blur(1.5px);
     -webkit-backdrop-filter: blur(1.5px);
     border: 1px solid rgba(255,255,255,0.29);
+    color: rgba(0, 0, 0, 0.8);
 }
 .box section:nth-child(2){
-    top: 5rem;
-    right: 19rem;
-    height: 20rem;
+    top: 6rem;
+    right: 16rem;
+    height: 14.5rem;
     width: 15rem;
     background-color: rgba(0, 0, 0, 0.9745012246645414);
     border-radius: 1rem;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255,255,255,0.29);
+    color: aquamarine;
 }
 form button{
     padding: 0.7rem 6rem;

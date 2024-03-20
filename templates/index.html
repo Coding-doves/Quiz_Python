@@ -16,10 +16,11 @@
                     <p>{{ question.question }}</p>
                 </section>
                 <section>
-                    {% for option_idx in range(question.options|length) %}
-                    <input type="radio" name="opt{{ loop.index }}" id="opt{{ loop.index }}_{{ option_idx }}" value="{{ option }}">
-                    <label for="opt{{ loop.index }}_{{ option_idx }}">{{ question.options[option_idx] }}</label><br>
+                    {% for option in question.options %}
+                    <input type="radio" name="opt{{ loop.index }}" id="opt{{ loop.index }}_{{ loop.index0 }}" value="{{ option }}">
+                    <label for="opt{{ loop.index }}_{{ loop.index0 }}">{{ option }}</label><br>
                     {% endfor%}
+                    <input type="hidden" name="correct{{ loop.index }}" value="{{ question.answer }}">
                 </section>
                 
             </div>
