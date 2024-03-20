@@ -1,5 +1,7 @@
-
-body{
+*{
+    box-sizing: border-box;
+}
+body, form button {
     background: rgb(0, 2, 9);
     background: linear-gradient(90deg,
     rgba(0,2,9,0.9328923469934708)
@@ -8,16 +10,18 @@ body{
     40%,
     rgba(22,226,249,1)
     100%);
+}
+body {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 30px;
+    padding: 2rem;
+    position: relative;
+    overflow-x: hidden;
 }
 .main{
-    height: 90%;
     width: 100%;
-    padding: 10px;
     margin: 10px;
     background-color: rgba(255, 255, 255, 0.44);
     border-radius: 16px;
@@ -25,21 +29,21 @@ body{
     backdrop-filter: blur(1.5px);
     -webkit-backdrop-filter: blur(1.5px);
     border: 1px solid rgba(255,255,255,0.29);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 1.5rem;
     position: relative;
 }
 form{
     width: 100%;
     position: relative;
-    padding: 10px;
+    padding: 0.9rem;
 }
 .box{
-    height: 25rem;
+    height: 26rem;
+    width: 100%;
+    padding: 1rem;
     margin: 0.7rem;
     background-color: rgba(255, 255, 255, 0.44);
-    border-radius: 16px;
+    border-radius: 1rem;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(3.5px);
     -webkit-backdrop-filter: blur(3.5px);
@@ -47,14 +51,55 @@ form{
     position: relative;
 }
 .box section{
-    height: 10rem;
-    width: 20rem;
+    position: absolute; 
     border-radius: 8px;
+    padding: 1.4rem;
 }
 .box section:nth-child(1){
-    background-color: aqua;
+    top: 1.6rem;
+    left: 17rem;
+    height: 15rem;
+    width: 25rem;
+    z-index: 1;
+    background-color: rgba(0, 255, 255, 0.14);
+    border-radius: 1rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border: 1px solid rgba(255,255,255,0.29);
 }
 .box section:nth-child(2){
-    background-color: black;    
-    transform: translate(-10%,70%);
+    top: 5rem;
+    right: 19rem;
+    height: 20rem;
+    width: 15rem;
+    background-color: rgba(0, 0, 0, 0.9745012246645414);
+    border-radius: 1rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255,255,255,0.29);
+}
+form button{
+    padding: 0.7rem 6rem;
+    border-radius: 1rem;
+    border: none;
+    outline-color: aqua;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transition: ease-in-out 2ms;
+}
+form button:hover{
+    text-decoration: underline;
+    text-decoration-thickness: 0.2rem;
+    text-decoration-color: aqua;
+}
+
+footer{
+    height: 3rem;
+    color: floralwhite;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 3rem;
+    margin-top: 0.7rem;
 }
