@@ -3,11 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/css/result.css">
     <title>Quiz Result</title>
 </head>
 <body>
     <h1>Congratulations</h1>
-    <p>Score: {{ score }}</p>
-    
+    <p>Score: {{ score }} / {{ total_questions }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Your Answer</th>
+                <th>Correct Answer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in question_data %}
+            <tr>
+                <td>{{ data.question }}</td>
+                <td>{{ data.user_answer }}</td>
+                <td>{{ data.correct_answer }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
