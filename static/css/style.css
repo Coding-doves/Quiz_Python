@@ -60,7 +60,7 @@ form{
 .box section:nth-child(1){
     top: 1.6rem;
     left: 19rem;
-    height: 10rem;
+    min-height: 10rem;
     width: 25rem;
     z-index: 1;
     background-color: rgba(0, 255, 255, 0.14);
@@ -75,7 +75,7 @@ form{
     top: 6rem;
     right: 16rem;
     height: 14.5rem;
-    width: 15rem;
+    min-width: 15rem;
     background-color: rgba(0, 0, 0, 0.9745012246645414);
     border-radius: 1rem;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);

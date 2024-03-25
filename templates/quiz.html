@@ -10,8 +10,8 @@
     <h1>Quiz It</h1>
     <div class="main">
        <form action="/submit" method="post">
-        {% set total_questions = in questions|length %}
-        <input type="hidden" name="total_questions value="{{ total_questions }}">
+        {% set total_questions = questions|length %}
+        <input type="hidden" name="total_questions" value="{{ total_questions }}">
             {% for question in questions %}
             <div class="box">
                 <section>

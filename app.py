@@ -1,41 +1,83 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session
 import bcrypt
 import mysql.connector
 from quiz import Quiz
 import random
+import os
 
 app = Flask(__name__)
+
+# Generate a random secret key
+secret_key = os.urandom(24)
+print(secret_key)
+# Set the secret key for session
+app.secret_key = secret_key
 
 # Connect to mysql db
 db = mysql.connector.connect(
     host='localhost',
     user='root',
     password='Ada.070#X',
-    database='QuizApp'
+    database='quizapp'
 )
 cursor =db.cursor()
+
+# Create tables if they don't exist
+cursor.execute('''CREATE TABLE IF NOT EXISTS users (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  first_name VARCHAR(255),
+                  last_name VARCHAR(255),
+                  username VARCHAR(255) UNIQUE,
+                  password VARCHAR(255)
+                  )''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_attempted (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  user_id INT,
+                  question VARCHAR(255),
+                  user_answer VARCHAR(255),
+                  correct_answer VARCHAR(255),
+                  quiz_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                  FOREIGN KEY (user_id) REFERENCES users(id)
+                  )''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_scores (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  user_id INT,
+                  score INT,
+                  total_questions INT,
+                  quiz_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                  FOREIGN KEY (user_id) REFERENCES users(id)
+                  )''')
+db.commit()
 
 
 @app.route("/", methods=['GET', 'POST'])
 def login():
-    """authenticating user """
+    """Authenticating user """
     if request.method == 'POST':
         data = request.form
         username = data.get('username')
         passwd = data.get('password')
 
-        query = "SELECT password FROM user WHERE username = %s"
+        query = "SELECT id, password FROM users WHERE username = %s"
         cursor.execute(query, (username,))
         value = cursor.fetchone()
 
         if value:
-            hashed_password = value[0]
+            user_id, hashed_password = value
             if bcrypt.checkpw(passwd.encode('utf-8'), hashed_password.encode('utf-8')):
-                # --- work on session for logged in user
+                # Set session variable for logged in user
+                session['user_id'] = user_id
+                session['username'] = username
+                session['logged_in'] = True
+                print('Valid user\n')
                 return redirect(url_for('quiz'))
             else:
+                print('wrong password\n')
                 return render_template('login.html', message="Wrong password")
         else:
+            print("User don't exist\n")
             return render_template('login.html', message="User not found")
 
     return render_template('login.html')
@@ -57,11 +99,16 @@ def signup():
 
         # encrypt the password
         hashed_passwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        query = 'INSERT INTO users (first_name, last_name, username, password) VALUES (%s, %s, %s, %s)'
-        cursor.execute(query, (firstname, lastname, username, hashed_passwd))
-        db.commit()
+        try:
+            # insert new users into table
+            query = 'INSERT INTO users (first_name, last_name, username, password) VALUES (%s, %s, %s, %s)'
+            cursor.execute(query, (firstname, lastname, username, hashed_passwd))
+            db.commit()
 
-        return redirect(url_for('login'))
+            return redirect(url_for('login'))
+        except Exception as e:
+            # if registration fails return response
+            return render_template('signup.html', error=str(e))
     
     return render_template('signup.html')
 
@@ -69,6 +116,9 @@ def signup():
 @app.route('/quiz')
 def quiz():
     ''' output to browser '''
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect(url_for('login'))
+
     # api endpoint
     api_url = "https://the-trivia-api.com/v2/questions"
 
@@ -82,25 +132,44 @@ def quiz():
 @app.route('/submit', methods=['POST'])
 def submit():
     ''' handle form returned data '''
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
     score = 0
-    total_questions = int(request.form.get(total_questions))
+    total_questions = int(request.form.get('total_questions'))
+    question_data = []
+
+     # Insert quiz score into quiz_score table
+    cursor.execute('''INSERT INTO quiz_scores (user_id, score, total_questions)
+                      VALUES (%s, %s, %s)''', (user_id, score, total_questions))
+    quiz_score_id = cursor.lastrowid
+
+
     for key, value in request.form.items():
         if key.startswith('opt'):
             que_index = key[3:] # Extract index of the question
-            answer_key = 'correct' + que_index
-            correct_ans = request.form.get(answer_key)
-            question = request.form.get('question' + que_index)
+            question_key = 'question' + que_index
+            correct_answer_key = 'correct' + que_index
+
+            question = request.form.get(question_key)
+            correct_ans = request.form.get(correct_answer_key)
 
             # increase score by 1 for correct answer
             if value == correct_ans:
                 score += 1
 
             # gather questions data for table display
-            question_data = {
+            question_data.append({
                 'question': question,
                 'user_answer': value,
                 'correct_answer': correct_ans
-            }
+            })
+
+    cursor.execute('''INSERT INTO quiz_attempted (user_id, question, user_answer, correct_answer, quiz_metadata_id)
+                              VALUES (%s, %s, %s, %s, %s)''', (user_id, question, value, correct_ans, quiz_score_id))
+
+    db.commit()
 
     return render_template('result.html',
         score=score,
@@ -111,13 +180,35 @@ def submit():
 @app.route('/logout')
 def logout():
     ''' end and clear sessions for logged in users '''
-    # -----work on clear the sessions
+    # clear the sessions
+    session.clear()
     return redirect(url_for('login'))
 
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    ''' display users personal data '''
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+
+    # Retrieve quiz data for the user
+    cursor.execute('''SELECT * FROM quiz_scores WHERE user_id = %s''', (user_id,))
+    quiz_metadata = cursor.fetchall()
+
+    return render_template('dashboard.html', quiz_metadata=quiz_metadata)
+
+
+@app.route('/view_quiz/<int:quiz_score_id>')
+def view_quiz(quiz_score_id):
+    pass
+
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    """Delete user account"""
+    pass
 
 
 if __name__ == '__main__':
