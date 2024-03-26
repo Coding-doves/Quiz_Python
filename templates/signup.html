@@ -12,12 +12,16 @@
         {% if error %}
         <p style="color: red;">{{ error }}</p>
         {% endif %}
-        <form action="/signup" method="post">
-            <input type="text" name="firstname" placeholder="First name" required>
-            <input type="text" name="lastname" placeholder="Last name" required>
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Sign up</button>
+        <form action="/signup" method="POST">
+            <label for="firstname">First Name:</label><br>
+            <input type="text" id="firstname" name="firstname" required><br>
+            <label for="lastname">Last Name:</label><br>
+            <input type="text" id="lastname" name="lastname" required><br>
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
+            <input type="submit" value="Sign Up">
         </form>
     </div>
     <div>

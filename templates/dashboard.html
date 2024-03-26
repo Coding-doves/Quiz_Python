@@ -6,7 +6,29 @@
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>Dashboard</h1>
-    <a href="/index"></a>
+    <nav>
+        <p><a href="/delete_account">Delete My Account</a></p>
+    </nav>
+    <h2>{{ username}}'s Dashboard</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Score</th>
+                <th>Total Questions</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in quiz_metadata %}
+            <tr>
+                <td>{{ data.quiz_date }}</td>
+                <td>{{ data.score }}</td>
+                <td>{{ data.total_questions }}</td>
+                <td><a href="/view_quiz/{{ data.id }}">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

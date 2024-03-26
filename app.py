@@ -31,16 +31,6 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                   password VARCHAR(255)
                   )''')
 
-cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_attempted (
-                  id INT AUTO_INCREMENT PRIMARY KEY,
-                  user_id INT,
-                  question VARCHAR(255),
-                  user_answer VARCHAR(255),
-                  correct_answer VARCHAR(255),
-                  quiz_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                  FOREIGN KEY (user_id) REFERENCES users(id)
-                  )''')
-
 cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_scores (
                   id INT AUTO_INCREMENT PRIMARY KEY,
                   user_id INT,
@@ -48,6 +38,18 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_scores (
                   total_questions INT,
                   quiz_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   FOREIGN KEY (user_id) REFERENCES users(id)
+                  )''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_attempted (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  user_id INT,
+                  quiz_score_id INT, 
+                  question VARCHAR(255),
+                  user_answer VARCHAR(255),
+                  correct_answer VARCHAR(255),
+                  quiz_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                  FOREIGN KEY (user_id) REFERENCES users(id),
+                  FOREIGN KEY (quiz_score_id) REFERENCES quiz_scores(id)
                   )''')
 db.commit()
 
@@ -166,7 +168,7 @@ def submit():
                 'correct_answer': correct_ans
             })
 
-    cursor.execute('''INSERT INTO quiz_attempted (user_id, question, user_answer, correct_answer, quiz_metadata_id)
+    cursor.execute('''INSERT INTO quiz_attempted (user_id, question, user_answer, correct_answer, quiz_score_id)
                               VALUES (%s, %s, %s, %s, %s)''', (user_id, question, value, correct_ans, quiz_score_id))
 
     db.commit()
@@ -193,22 +195,49 @@ def dashboard():
 
     user_id = session.get('user_id')
 
+    # Retrieve username
+    cursor.execute('''SELECT username FROM users WHERE id = %s''', (user_id,))
+    username = cursor.fetchone()[0]
+
     # Retrieve quiz data for the user
     cursor.execute('''SELECT * FROM quiz_scores WHERE user_id = %s''', (user_id,))
     quiz_metadata = cursor.fetchall()
 
-    return render_template('dashboard.html', quiz_metadata=quiz_metadata)
+    return render_template('dashboard.html', username=username, quiz_metadata=quiz_metadata)
 
 
 @app.route('/view_quiz/<int:quiz_score_id>')
 def view_quiz(quiz_score_id):
-    pass
+    """display specific quiz data"""
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+
+    # query db for specific quiz
+    cursor.execute('''SELECT * FROM quiz_attempted WHERE quiz_score_id = %s AND user_id = %s''',
+                   (quiz_score_id, user_id))
+    quizzes = cursor.fetchall()
+
+    return render_template('view_quiz.html', quizzes=quizzes)
 
 
 @app.route('/delete_account', methods=['POST'])
 def delete_account():
     """Delete user account"""
-    pass
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+
+    try:
+        # delete user from db
+        cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        db.commit()
+        session.clear()
+        return redirect(url_for('login'))
+    except Exception as e:
+        return render_template('dashboard.html', error=str(e))
 
 
 if __name__ == '__main__':

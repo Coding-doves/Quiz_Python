@@ -38,7 +38,7 @@ form{
     padding: 0.9rem;
 }
 .box{
-    height: 23rem;
+    min-height: 23rem;
     width: 100%;
     padding: 1rem;
     margin: 0.7rem;
@@ -62,6 +62,7 @@ form{
     left: 19rem;
     min-height: 10rem;
     width: 25rem;
+    max-width: 25rem;
     z-index: 1;
     background-color: rgba(0, 255, 255, 0.14);
     border-radius: 1rem;
@@ -74,8 +75,9 @@ form{
 .box section:nth-child(2){
     top: 6rem;
     right: 16rem;
-    height: 14.5rem;
-    min-width: 15rem;
+    min-height: 14.5rem;
+    width: 15rem;
+    max-width: 20rem;
     background-color: rgba(0, 0, 0, 0.9745012246645414);
     border-radius: 1rem;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);

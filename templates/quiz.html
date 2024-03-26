@@ -9,9 +9,9 @@
 <body>
     <h1>Quiz It</h1>
     <div class="main">
-       <form action="/submit" method="post">
-        {% set total_questions = questions|length %}
-        <input type="hidden" name="total_questions" value="{{ total_questions }}">
+        <form action="/submit" method="post">
+            {% set total_questions = questions|length %}
+            <input type="hidden" name="total_questions" value="{{ total_questions }}">
             {% for question in questions %}
             <div class="box">
                 <section>
@@ -19,10 +19,10 @@
                 </section>
                 <section>
                     {% for option in question.options %}
-                    <input type="radio" name="opt{{ loop.index }}" id="opt{{ loop.index }}_{{ loop.index0 }}" value="{{ option }}">
-                    <label for="opt{{ loop.index }}_{{ loop.index0 }}">{{ option }}</label><br>
-                    {% endfor%}
-                    <input type="hidden" name="correct{{ loop.index }}" value="{{ question.answer }}">
+                    <input type="radio" name="opt{{ forloop.counter }}" value="{{ option }}">
+                    <label>{{ option }}</label><br>
+                    {% endfor %}
+                    <input type="hidden" name="correct{{ loop.index0 }}" value="{{ question.answer }}">
                 </section>
                 
             </div>
