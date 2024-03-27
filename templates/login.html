@@ -1,29 +1,38 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/css/login.css">
     <title>Authenticate</title>
 </head>
 <body>
-    <h1>How is your day going?</h1>
-    <div id="login">
-        <h2>Login</h2>
-        {% if message %}
-        <p>{{ message }}</p>
-        {% endif %}
-        <form action="/" method="POST">
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username" required><br>
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" required><br>
-            <input type="submit" value="Login">
-        </form>
-        
-    </div>
+    <main>
+        <h1>How is your day going?</h1>
+    
+        <div id="login-box">
+            <h2>Login</h2>
+            {% if message %}
+            <p class="message">{{ message }}</p>
+            {% endif %}
+            <form action="/" method="POST">
+                <div class="input-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
 
-    <div>
-        <p><a href="/signup">Sign-up if you don't have an account.</a></p>
-    </div>
+        <p class="signup-link"><a href="/signup">Sign-up</a> if you don't have an account.</p>
+    </main>
+    <div class="bubbles1 bubble"></div>
+    <div class="bubbles2 bubble"></div>
+    <div class="bubbles3 bubble"></div>
+
 </body>
 </html>

@@ -3,32 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/css/dashboard.css">
     <title>Dashboard</title>
 </head>
 <body>
-    <nav>
-        <p><a href="/delete_account">Delete My Account</a></p>
-    </nav>
-    <h2>{{ username}}'s Dashboard</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Score</th>
-                <th>Total Questions</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for data in quiz_metadata %}
-            <tr>
-                <td>{{ data.quiz_date }}</td>
-                <td>{{ data.score }}</td>
-                <td>{{ data.total_questions }}</td>
-                <td><a href="/view_quiz/{{ data.id }}">View</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <main>
+        <nav>
+            <p><a href="#">LoGo</a></p>
+            <p class="active"><a href="/dashboard">{{username}}'s Dashboard </a></p>
+            <p><a href="/quiz.py">Quizzz It</a></p>
+            <p>
+                <form action="/logout" method="post">
+                    <a href="#">Logout</a>
+                </form>
+            </p>
+            <p><a href="/delete_account">Delete My Account</a></p>
+        </nav>
+
+        <div>
+            <h2>{{ username }}'s Dashboard</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Score</th>
+                        <th>Total Questions</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in quiz_metadata %}
+                    <tr>
+                        <td>{{ data.quiz_date }}</td>
+                        <td>{{ data.score }}</td>
+                        <td>{{ data.total_questions }}</td>
+                        <td><a href="/view_quiz/{{ data.id }}">View</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
 </body>
 </html>

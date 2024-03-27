@@ -1,0 +1,101 @@
+
+body{
+    background: rgb(238,174,202);
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem;
+    position: relative;
+    overflow-x: hidden;
+}
+main{
+    width: 100%;
+    margin: 10px;
+    background-color: rgba(255, 255, 255, 0.44);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border: 1px solid rgba(255,255,255,0.29);
+    padding: 1.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: hidden;
+}
+nav{
+    flex: 0 1 auto; /* This allows nav to grow but not shrink */
+    margin: 5px;
+    justify-content: center;
+    flex-basis: 20%;
+    background-color: rgba(255, 255, 255, 0.44);
+    border-radius: 1rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(3.5px);
+    -webkit-backdrop-filter: blur(3.5px);
+    border: 1px solid rgba(255,255,255,0.29);
+    padding: 1rem;
+    position: relative;
+}
+nav p{
+    background-color: rgba(255, 255, 255, 0.44);
+    border-radius: 10px;
+    box-shadow:  20px 20px 60px #bebebe,
+             -20px -20px 60px #ffffff;
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border: 1px solid rgba(255,255,255,0.29);
+    padding: 1rem;
+}
+nav p.active{
+    background-color: #1c61ea;
+}
+nav p.active a{
+    color: #FFFFFF;
+}
+nav p a, nav p form a{
+    text-decoration: none;
+    font-size: large;
+    font-weight: 600;
+    color: #333333;
+}
+main div h2, nav p{
+    text-transform: capitalize;
+}
+main div h2{ color: #333333;}
+main div{
+    flex-basis: 77%;
+    padding: 2rem;
+}
+
+main div table {
+    border-collapse: collapse;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.15); /* Frosted glass effect */
+    border-radius: 10px;
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 ); /* Glass shadow */
+    backdrop-filter: blur(10px); /* Blurring effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari */
+    overflow: hidden;
+}
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid rgba(50, 45, 45, 0.1);
+  }
+
+  th {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  tr:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
