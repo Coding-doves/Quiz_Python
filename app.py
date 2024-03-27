@@ -142,12 +142,6 @@ def submit():
     total_questions = int(request.form.get('total_questions'))
     question_data = []
 
-     # Insert quiz score into quiz_score table
-    cursor.execute('''INSERT INTO quiz_scores (user_id, score, total_questions)
-                      VALUES (%s, %s, %s)''', (user_id, score, total_questions))
-    quiz_score_id = cursor.lastrowid
-
-
     for key, value in request.form.items():
         if key.startswith('opt'):
             que_index = key[3:] # Extract index of the question
@@ -157,19 +151,33 @@ def submit():
             question = request.form.get(question_key)
             correct_ans = request.form.get(correct_answer_key)
 
-            # increase score by 1 for correct answer
-            if value == correct_ans:
-                score += 1
-
             # gather questions data for table display
             question_data.append({
                 'question': question,
                 'user_answer': value,
                 'correct_answer': correct_ans
             })
+            
+            # increase score by 1 for correct answer
+            if value == correct_ans:
+                score += 1
 
-    cursor.execute('''INSERT INTO quiz_attempted (user_id, question, user_answer, correct_answer, quiz_score_id)
-                              VALUES (%s, %s, %s, %s, %s)''', (user_id, question, value, correct_ans, quiz_score_id))
+    # Insert quiz score into quiz_score table
+    cursor.execute('''INSERT INTO quiz_scores (user_id, score, total_questions)
+                      VALUES (%s, %s, %s)''', (user_id, score, total_questions))
+
+    db.commit()
+
+    # Retrieve quiz_score_id
+    quiz_score_id = None
+    if cursor.lastrowid is not None:
+        quiz_score_id = cursor.lastrowid
+
+    # Insert attempted quiz data into quiz_attempted table
+    if quiz_score_id is not None:
+        for attempt in question_data:
+            cursor.execute('''INSERT INTO quiz_attempted (user_id, question, user_answer, correct_answer, quiz_score_id)
+                              VALUES (%s, %s, %s, %s, %s)''', (user_id, attempt['question'], attempt['user_answer'], attempt['correct_answer'], quiz_score_id))
 
     db.commit()
 

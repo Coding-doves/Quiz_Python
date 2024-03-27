@@ -15,25 +15,28 @@
         <form action="/submit" method="post">
             {% set total_questions = questions|length %}
             <input type="hidden" name="total_questions" value="{{ total_questions }}">
-            {% for question in questions %}
+            {% for question_index in range(total_questions) %}
             <div class="box">
                 <section>
-                    <p>{{ question.question }}</p>
+                    <p>{{ questions[question_index].question }}</p>
+                    <!-- Hidden input for question data -->
+                    <input type="hidden" name="question{{ question_index }}" value="{{ questions[question_index].question }}">
                 </section>
                 <section>
-                    {% for option in question.options %}
-                    <input type="radio" name="opt{{ forloop.counter }}" value="{{ option }}">
+                    {% set total_options = questions[question_index].options|length %}
+                    {% for option_index in range(total_options) %}
+                    {% set option = questions[question_index].options[option_index] %}
+                    <input type="radio" name="opt{{ question_index }}" value="{{ option }}">
                     <label>{{ option }}</label><br>
                     {% endfor %}
-                    <input type="hidden" name="correct{{ loop.index0 }}" value="{{ question.answer }}">
+                    <input type="hidden" name="correct{{ question_index }}" value="{{ questions[question_index].answer }}">
                 </section>
-                
             </div>
             {% endfor %}
             <button type="submit">Submit</button>
         </form>
-        <a href="/logout">logout</a>
     </div>
+    
     
     <footer>Copyright 2024 browndove</footer>
     

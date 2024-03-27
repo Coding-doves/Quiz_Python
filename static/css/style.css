@@ -20,6 +20,10 @@ body {
     position: relative;
     overflow-x: hidden;
 }
+h1{
+    color: antiquewhite;
+    margin-top: 6rem;
+}
 .main{
     width: 100%;
     margin: 10px;
@@ -38,10 +42,11 @@ form{
     padding: 0.9rem;
 }
 .box{
-    min-height: 23rem;
+    min-height: 19rem;
     width: 100%;
     padding: 1rem;
     margin: 0.7rem;
+    overflow-y: auto;
     background-color: rgba(255, 255, 255, 0.44);
     border-radius: 1rem;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -59,7 +64,7 @@ form{
 }
 .box section:nth-child(1){
     top: 1.6rem;
-    left: 19rem;
+    left: 15rem;
     min-height: 10rem;
     width: 25rem;
     max-width: 25rem;
@@ -74,10 +79,10 @@ form{
 }
 .box section:nth-child(2){
     top: 6rem;
-    right: 16rem;
-    min-height: 14.5rem;
-    width: 15rem;
-    max-width: 20rem;
+    right: 10rem;
+    min-height: 10.5rem;
+    width: 25rem;
+    max-width: 25rem;
     background-color: rgba(0, 0, 0, 0.9745012246645414);
     border-radius: 1rem;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
