@@ -243,7 +243,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/delete_account', methods=['POST'])
+@app.route('/delete_acct', methods=['GET', 'POST'])
 def delete_account():
     """Delete user account"""
     if 'logged_in' not in session or not session['logged_in']:
@@ -252,13 +252,26 @@ def delete_account():
     user_id = session.get('user_id')
 
     try:
-        # delete user from db
+        # Delete user from users table
         cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+
+        # Delete user's quiz scores from quiz_scores table
+        cursor.execute("DELETE FROM quiz_scores WHERE user_id = %s", (user_id,))
+
+        # Delete user's attempted quizzes from quiz_attempted table
+        cursor.execute("DELETE FROM quiz_attempted WHERE user_id = %s", (user_id,))
+
+        # Commit the transactions
         db.commit()
+
+        # Clear the session
         session.clear()
+
         return redirect(url_for('login'))
     except Exception as e:
-        return render_template('dashboard.html', error=str(e))
+        # If an error occurs, rollback changes and render an error message
+        db.rollback()
+        return render_template('delete_acct.html', error=str(e))
 
 
 if __name__ == '__main__':
