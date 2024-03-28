@@ -213,7 +213,13 @@ def dashboard():
         # print(dat['quiz_date'])
         # print(dat['total_questions'])
     
-    return render_template('dashboard.html', username=username, quiz_metadata=quiz_metadata)
+    api_endpoint = request.url_root + url_for('attempted_question_api')
+    
+    return render_template(
+        'dashboard.html',
+        username=username,
+        quiz_metadata=quiz_metadata,
+        api_endpoint=api_endpoint)
 
 
 @app.route('/view_quiz/<int:quiz_score_id>')
@@ -233,6 +239,40 @@ def view_quiz(quiz_score_id):
     quiz_metadata = [{'question': row[0], 'user_answer': row[1], 'correct_answer': row[2]} for row in quizzes]
 
     return render_template('view_quiz.html', quizzes=quiz_metadata)
+
+
+@app.route('/questions')
+def attempted_question_api():
+    """Retrieve latest 20 attempted_quiz data in JSON"""
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+
+    # Query the database for latest 20 quiz data
+    cursor.execute('''SELECT qa.id, qa.question, qa.user_answer, qa.correct_answer 
+                      FROM quiz_attempted qa
+                      JOIN users u ON qa.user_id = u.id
+                      WHERE u.id = %s
+                      ORDER BY qa.quiz_date DESC 
+                      LIMIT 20''', (user_id,))
+    quizzes = cursor.fetchall()
+
+    json_quiz = []
+    for row in quizzes:
+        # Ensure all elements of the row are defined
+            quiz_data = {
+                "id": row[0],
+                "text": row[1],
+                "answer": [
+                    {"text": row[2], "correct": row[3] == row[2]},
+                    {"text": row[3], "correct": True}
+                ]
+            }
+            json_quiz.append(quiz_data)
+
+    # Return the data as JSON and endpoint URL
+    return jsonify({'questions': json_quiz})
 
 
 @app.route('/logout')

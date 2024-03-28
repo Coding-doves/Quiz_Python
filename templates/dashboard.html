@@ -14,6 +14,7 @@
             <a href="/quiz"><p>Quizzz It</p></a>
             <a href="/profile"><p>My Profile</p></a>
             <a href="/logout"><p>Logout</p></a>
+            <a href="{{ api_endpoint }}"><p>Attempt Quiz API</p></a>
             <a href="/delete_acct"><p>Delete My Account</p></a>
         </nav>
 
@@ -37,12 +38,10 @@
                         <td>{{ data['total_questions'] }}</td>
                         <td><a href="/view_quiz/{{ data['id'] }}">View</a></td>
                     </tr>
+                    {% endfor %}
+                    <!-- loop ends -->
                 </tbody>
             </table>
-            <!-- use the API URL -->
-            <a href="{{ url_for('view_quiz', quiz_score_id=data['id']) }}">View Quiz Data API</a>
-            {% endfor %}
-            <!-- loop ends -->
         </div>
     </main>
 </body>
