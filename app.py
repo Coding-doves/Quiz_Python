@@ -187,14 +187,6 @@ def submit():
         question_data=question_data)
 
 
-@app.route('/logout')
-def logout():
-    ''' end and clear sessions for logged in users '''
-    # clear the sessions
-    session.clear()
-    return redirect(url_for('login'))
-
-
 @app.route('/dashboard')
 def dashboard():
     ''' display users personal data '''
@@ -202,15 +194,25 @@ def dashboard():
         return redirect(url_for('login'))
 
     user_id = session.get('user_id')
+    # print(user_id)
 
     # Retrieve username
     cursor.execute('''SELECT username FROM users WHERE id = %s''', (user_id,))
     username = cursor.fetchone()[0]
+    print(username)
 
     # Retrieve quiz data for the user
-    cursor.execute('''SELECT * FROM quiz_scores WHERE user_id = %s''', (user_id,))
+    cursor.execute('''SELECT id, score, total_questions, quiz_date FROM quiz_scores WHERE user_id = %s''', (user_id,))
     quiz_metadata = cursor.fetchall()
 
+    # Convert quiz_metadata tuples to dictionaries for easier access
+    quiz_metadata = [{'quiz_date': row[3], 'score': row[1], 'total_questions': row[2], 'id': row[0]} for row in quiz_metadata]
+
+    # for dat in quiz_metadata:
+        # print(dat['score'])
+        # print(dat['quiz_date'])
+        # print(dat['total_questions'])
+    
     return render_template('dashboard.html', username=username, quiz_metadata=quiz_metadata)
 
 
@@ -223,11 +225,22 @@ def view_quiz(quiz_score_id):
     user_id = session.get('user_id')
 
     # query db for specific quiz
-    cursor.execute('''SELECT * FROM quiz_attempted WHERE quiz_score_id = %s AND user_id = %s''',
+    cursor.execute('''SELECT question, user_answer, correct_answer FROM quiz_attempted WHERE quiz_score_id = %s AND user_id = %s''',
                    (quiz_score_id, user_id))
     quizzes = cursor.fetchall()
 
-    return render_template('view_quiz.html', quizzes=quizzes)
+    # Convert quiz_metadata tuples to dictionaries for easier access
+    quiz_metadata = [{'question': row[0], 'user_answer': row[1], 'correct_answer': row[2]} for row in quizzes]
+
+    return render_template('view_quiz.html', quizzes=quiz_metadata)
+
+
+@app.route('/logout')
+def logout():
+    ''' end and clear sessions for logged in users '''
+    # clear the sessions
+    session.clear()
+    return redirect(url_for('login'))
 
 
 @app.route('/delete_account', methods=['POST'])

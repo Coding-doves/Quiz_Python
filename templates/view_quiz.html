@@ -3,27 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/css/header.css">
+    <link rel="stylesheet" href="static/css/result.css">
     <title>View Quiz</title>
 </head>
 <body>
-    <h2>View Quiz</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Question</th>
-                <th>Your Answer</th>
-                <th>Correct Answer</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for data in quizzes %}
-            <tr>
-                <td>{{ data.question }}</td>
-                <td>{{ data.user_answer }}</td>
-                <td>{{ data.correct_answer }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% include 'header.html' %}
+
+    <main>
+        <h2>View Quiz</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Your Answer</th>
+                    <th>Correct Answer</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in quizzes %}
+                <tr>
+                    <td>{{ data['question'] }}</td>
+                    <td>{{ data['user_answer'] }}</td>
+                    <td>{{ data['correct_answer'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <script src="static/js/script.js"></script>
+
 </body>
 </html>

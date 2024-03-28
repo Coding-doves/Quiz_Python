@@ -9,15 +9,11 @@
 <body>
     <main>
         <nav>
-            <p><a href="#">LoGo</a></p>
-            <p class="active"><a href="/dashboard">{{username}}'s Dashboard </a></p>
-            <p><a href="/quiz.py">Quizzz It</a></p>
-            <p>
-                <form action="/logout" method="post">
-                    <a href="#">Logout</a>
-                </form>
-            </p>
-            <p><a href="/delete_account">Delete My Account</a></p>
+            <a href="#"><p>LoGo</p></a>
+            <a href="/dashboard"><p class="active">{{ username }}'s Dashboard </p></a>
+            <a href="/quiz"><p>Quizzz It</p></a>
+            <a href="/logout"><p>Logout</p></a>
+            <a href="/delete_acct"><p>Delete My Account</p></a>
         </nav>
 
         <div>
@@ -25,7 +21,7 @@
             <table border="1">
                 <thead>
                     <tr>
-                        <th>Date</th>
+                        <th>Date / Time</th>
                         <th>Score</th>
                         <th>Total Questions</th>
                         <th>Action</th>
@@ -34,10 +30,10 @@
                 <tbody>
                     {% for data in quiz_metadata %}
                     <tr>
-                        <td>{{ data.quiz_date }}</td>
-                        <td>{{ data.score }}</td>
-                        <td>{{ data.total_questions }}</td>
-                        <td><a href="/view_quiz/{{ data.id }}">View</a></td>
+                        <td>{{ data['quiz_date'] }}</td>
+                        <td>{{ data['score'] }}</td>
+                        <td>{{ data['total_questions'] }}</td>
+                        <td><a href="/view_quiz/{{ data['id'] }}">View</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

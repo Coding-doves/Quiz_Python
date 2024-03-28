@@ -41,7 +41,7 @@ nav{
     padding: 1rem;
     position: relative;
 }
-nav p{
+nav a p{
     background-color: rgba(255, 255, 255, 0.44);
     border-radius: 10px;
     box-shadow:  20px 20px 60px #bebebe,
@@ -50,20 +50,16 @@ nav p{
     -webkit-backdrop-filter: blur(1.5px);
     border: 1px solid rgba(255,255,255,0.29);
     padding: 1rem;
-}
-nav p.active{
-    background-color: #1c61ea;
-}
-nav p.active a{
-    color: #FFFFFF;
-}
-nav p a, nav p form a{
-    text-decoration: none;
     font-size: large;
     font-weight: 600;
     color: #333333;
 }
-main div h2, nav p{
+nav a{ text-decoration: none; }
+nav a p.active{
+    background-color: #1c61ea;
+    color: #FFFFFF;
+}
+main div h2, nav a p{
     text-transform: capitalize;
 }
 main div h2{ color: #333333;}
