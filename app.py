@@ -202,7 +202,7 @@ def dashboard():
     print(username)
 
     # Retrieve quiz data for the user
-    cursor.execute('''SELECT id, score, total_questions, quiz_date FROM quiz_scores WHERE user_id = %s''', (user_id,))
+    cursor.execute('''SELECT id, score, total_questions, quiz_date FROM quiz_scores WHERE user_id = %s ORDER BY quiz_date DESC''', (user_id,))
     quiz_metadata = cursor.fetchall()
 
     # Convert quiz_metadata tuples to dictionaries for easier access
@@ -243,7 +243,13 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/delete_acct', methods=['GET', 'POST'])
+@app.route('/delete_acct')
+def delete_acct():
+    ''' route to warning page '''
+    return render_template('delete_acct.html')
+
+
+@app.route('/delete_account', methods=['GET', 'POST'])
 def delete_account():
     """Delete user account"""
     if 'logged_in' not in session or not session['logged_in']:
@@ -252,14 +258,15 @@ def delete_account():
     user_id = session.get('user_id')
 
     try:
-        # Delete user from users table
-        cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        
+        # Delete user's attempted quizzes from quiz_attempted table
+        cursor.execute("DELETE FROM quiz_attempted WHERE user_id = %s", (user_id,))
 
         # Delete user's quiz scores from quiz_scores table
         cursor.execute("DELETE FROM quiz_scores WHERE user_id = %s", (user_id,))
 
-        # Delete user's attempted quizzes from quiz_attempted table
-        cursor.execute("DELETE FROM quiz_attempted WHERE user_id = %s", (user_id,))
+        # Delete user from users table
+        cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
 
         # Commit the transactions
         db.commit()

@@ -77,6 +77,7 @@ main div table {
     backdrop-filter: blur(10px); /* Blurring effect */
     -webkit-backdrop-filter: blur(10px); /* Safari */
     overflow: hidden;
+    margin-bottom: 1.4rem;
 }
   th, td {
     padding: 10px;

@@ -12,6 +12,7 @@
             <a href="#"><p>LoGo</p></a>
             <a href="/dashboard"><p class="active">{{ username }}'s Dashboard </p></a>
             <a href="/quiz"><p>Quizzz It</p></a>
+            <a href="/profile"><p>My Profile</p></a>
             <a href="/logout"><p>Logout</p></a>
             <a href="/delete_acct"><p>Delete My Account</p></a>
         </nav>
@@ -28,6 +29,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- loop starts -->
                     {% for data in quiz_metadata %}
                     <tr>
                         <td>{{ data['quiz_date'] }}</td>
@@ -35,9 +37,12 @@
                         <td>{{ data['total_questions'] }}</td>
                         <td><a href="/view_quiz/{{ data['id'] }}">View</a></td>
                     </tr>
-                    {% endfor %}
                 </tbody>
             </table>
+            <!-- use the API URL -->
+            <a href="{{ url_for('view_quiz', quiz_score_id=data['id']) }}">View Quiz Data API</a>
+            {% endfor %}
+            <!-- loop ends -->
         </div>
     </main>
 </body>
