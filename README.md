@@ -1,5 +1,78 @@
-# Quiz
+**Quiz App**
 
-### Tools
+---
 
-### How to Use
+### Overview
+
+The Quiz App is a web application designed to allow users to take quizzes on various topics. Users can register an account, login, take quizzes, view their quiz history, and manage their profile details.
+
+### Features
+
+- User authentication: Users can register an account and log in securely.
+- Quiz taking: Users can take quizzes on different topics.
+- Quiz history: Users can view their quiz history and scores.
+- Profile management: Users can update their profile details and images.
+
+### Technologies Used
+
+- Python
+- Flask
+- MySQL
+- bcrypt (for password hashing)
+- Jinja2 (for templating)
+- HTML/CSS/JavaScript (for front-end)
+
+### Getting Started
+
+1. Clone the repository:
+
+```
+git clone https://github.com/Coding-doves/Quiz_Python.git
+```
+
+2. Install dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+3. Set up MySQL database:
+
+   - Create a MySQL database named `quizapp`.
+   - Update the database connection settings in `app.py` to match your MySQL configuration.
+
+4. Run the application:
+
+```
+python app.py
+```
+
+5. Open your web browser and navigate to `http://localhost:5000` to access the Quiz App.
+
+### Usage
+
+- **Registration:** Navigate to the registration page (`/signup`) to create a new account.
+- **Login:** Log in with your username and password on the login page (`/login`).
+- **Quiz Taking:** Take quizzes on various topics by visiting the quiz page (`/quiz`).
+- **View Quiz History:** Check your quiz history and scores on the dashboard (`/dashboard`).
+- **Profile Management:** Update your profile details and images on the profile page (`/profile`).
+
+### API Documentation
+
+For detailed information on the Quiz App API, refer to the [API Documentation](#api-documentation) section in this README.
+
+### Contributions
+
+Contributions to the Quiz App are welcome! If you find any bugs or have suggestions for improvement, please feel free to open an issue or submit a pull request.
+
+### License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+### Contact
+
+For any inquiries or support, please contact [Ada](mailto:obenedicta4@gmail.com).
+
+---
+
+This README provides an overview of the Quiz App, including its features, technologies used, setup instructions, usage guide, API documentation, contributions, license, and contact information.
