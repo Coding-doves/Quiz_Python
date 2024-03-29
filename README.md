@@ -67,7 +67,7 @@ Contributions to the Quiz App are welcome! If you find any bugs or have suggesti
 
 ### License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.txt) file for details.
 
 ### Contact
 
