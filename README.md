@@ -57,12 +57,12 @@ python app.py
 - **View Quiz History:** Check your quiz history and scores on the dashboard (`/dashboard`).
 - **Profile Management:** Update your profile details and images on the profile page (`/profile`).
 
-### API Documentation Quiz Attempted Questions
+## API Documentation Quiz Attempted Questions
 
 This API documentation provides details on the Quiz App API endpoints for retrieving 20 recently attempted quiz data.
 
-## Questions API
-
+### Questions API
+---
 ### Endpoint: /questions
 - Method: GET
 - Description: Retrieve recent quiz questions and answers for the logged-in user.
