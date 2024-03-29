@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>User Profile</h1>
+
+    <!-- Display profile image -->
+    <img src="{{ url_for('get_image', image_type='profile') }}" alt="Profile Image" width="200">
+    <form action="/profile" method="post" enctype="multipart/form-data">
+        <input type="file" name="profile_image">
+        <input type="submit" value="Upload Profile Image">
+    </form>
+
+    <!-- Display banner image -->
+    <img src="{{ url_for('get_image', image_type='banner') }}" alt="Banner Image" width="500">
+    <form action="/profile" method="post" enctype="multipart/form-data">
+        <input type="file" name="banner_image">
+        <input type="submit" value="Upload Banner Image">
+    </form>
+
+    <!-- Edit profile details form -->
+    <form action="/profile/edit" method="post">
+        <label for="firstname">First Name:</label>
+        <input type="text" id="firstname" name="firstname" value="{{ user.first_name }}"><br>
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" name="lastname" value="{{ user.last_name }}"><br>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="{{ user.username }}"><br>
+        <input type="submit" value="Save Changes">
+    </form>
+
+    <!-- Display profile details -->
+    <div>
+        <h2>Profile Details</h2>
+        <p><strong>First Name:</strong> {{ user.first_name }}</p>
+        <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+    </div>
+</body>
+</html>
