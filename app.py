@@ -51,6 +51,15 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_attempted (
                   FOREIGN KEY (user_id) REFERENCES users(id),
                   FOREIGN KEY (quiz_score_id) REFERENCES quiz_scores(id)
                   )''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS images (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  user_id INT,
+                  profile_image BLOB,
+                  banner_image BLOB,
+                  FOREIGN KEY (user_id) REFERENCES users(id)
+                  )''')
+
 db.commit()
 
 
@@ -273,6 +282,12 @@ def attempted_question_api():
 
     # Return the data as JSON and endpoint URL
     return jsonify({'questions': json_quiz})
+
+
+@app.route('/profile')
+def profile():
+    ''' display user Profle page '''
+    return render_template('profile.html')
 
 
 @app.route('/logout')
