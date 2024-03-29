@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/css/login.css">
+    <link rel="stylesheet" href="static/css/delete_acct.css">
     <title>Delete Account</title>
 </head>
 <body>
-    <h2>Delete Account</h2>
-    <p>Are you sure you want to delete your account?</p>
-    {% if error %}
-    <p class="message" style="color: red;">{{ error }}</p>
-    {% endif %}
-    <form action="/delete_account" method="POST">
-        <input type="submit" value="Yes, Delete My Account">
-    </form>
-    <p><a href="/dashboard">No, Changed My Mind</a></p>
+    <main>
+        <h1>Delete Account</h1>
+        <p>Are you sure you want to delete your account?</p>
+        {% if error %}
+        <p class="message" style="color: red;">{{ error }}</p>
+        {% endif %}
+        <form action="/delete_account" method="POST">
+            <button type="submit">Yes, Delete My Account</button>
+        </form>
+        <p class="signup-link">No, <a href="/dashboard">Changed My Mind</a></p>
+    </main>
 </body>
 </html>

@@ -1,0 +1,16 @@
+body{
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,13,121,1) 35%, rgba(0,212,255,1) 100%);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+h1{
+    font-size: 3rem;
+}
+p{
+    color: white;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+button{
+    background-color: red;
+}
