@@ -14,6 +14,9 @@
             <h2>Sign up</h2>
             {% if error %}
             <p class="message" style="color: red;">{{ error }}</p>
+            {% if suggestions %}
+            <span style="color: green;"> Suggestions: {{ suggestions }}</span><br>
+            {% endif %}
             {% endif %}
             <form action="/signup" method="POST">
                 <div class="input-group">
@@ -32,12 +35,16 @@
                     <label for="password">Password:</label><br>
                     <input type="password" id="password" name="password" required><br>
                 </div>
+                <div class="input-group">
+                    <label for="email">E-mail:</label><br>
+                    <input type="email" id="email" name="email" required><br>
+                </div>
 
                 <button type="submit">Sign Up</button>
             </form>
         </div>
 
-        <p class="signup-link"><a href="/">Login</a> you have an existing account.</p>
+        <p class="signup-link"><a href="/">Login</a> if you have an existing account.</p>
     </main>
     <div class="bubbles1 bubble"></div>
     <div class="bubbles2 bubble"></div>

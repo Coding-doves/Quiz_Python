@@ -1,4 +1,5 @@
 from io import BytesIO
+import string
 from flask import Flask, jsonify, render_template, request, redirect, url_for, session, send_file
 import bcrypt
 import mysql.connector
@@ -28,8 +29,9 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                   id INT AUTO_INCREMENT PRIMARY KEY,
                   first_name VARCHAR(255),
                   last_name VARCHAR(255),
-                  username VARCHAR(255) UNIQUE,
-                  password VARCHAR(255)
+                  username VARCHAR(255) UNIQUE NOT NULL,
+                  password VARCHAR(255),
+                  email VARCHAR(255) UNIQUE NOT NULL
                   )''')
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_scores (
@@ -94,6 +96,19 @@ def login():
 
     return render_template('login.html')
 
+def password_recovery_token():
+    '''generate random token'''
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+
+def generate_username_suggestions(username):
+    suggestions = []
+    for i in range(3):
+        # Append a random number to the username
+        suggestion = str(username) + str(random.randint(1, 1000))
+        suggestions.append(suggestion)
+    return suggestions
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -104,21 +119,48 @@ def signup():
         lastname = data.get('lastname')
         username = data.get('username')
         password = data.get('password')
+        email = data.get('email')
 
         # Ensure password is at least 6 character
         if len(password) < 6:
             return render_template('signup.html', error='Password must be at least six characters long')
 
+        query = "SELECT username FROM users WHERE username = %s"
+        cursor.execute(query, (username,))
+        existing_usernames = cursor.fetchone()
+
+        if existing_usernames:
+            # Username already exists, generate suggestions
+            suggestions = generate_username_suggestions(existing_usernames)
+            return render_template('signup.html', error='Username already exist.', suggestions=suggestions)
+
         # encrypt the password
         hashed_passwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         try:
             # insert new users into table
-            query = 'INSERT INTO users (first_name, last_name, username, password) VALUES (%s, %s, %s, %s)'
-            cursor.execute(query, (firstname, lastname, username, hashed_passwd))
+            query = 'INSERT INTO users (first_name, last_name, username, password, email) VALUES (%s, %s, %s, %s)'
+            cursor.execute(query, (firstname, lastname, username, hashed_passwd, email))
             db.commit()
 
             return redirect(url_for('login'))
         except Exception as e:
+            query = "SELECT username FROM users WHERE username = %s"
+            cursor.execute(query, (username,))
+            existing_usernames = cursor.fetchone()
+
+            query2 = "SELECT email FROM users WHERE email = %s"
+            cursor.execute(query2, (email,))
+            existing_email = cursor.fetchone()
+
+            if existing_usernames:
+                # Username already exists, generate suggestions
+                suggestions = generate_username_suggestions(existing_usernames)
+                return render_template('signup.html', error='Username already exist.', suggestions=suggestions)
+
+            if existing_email:
+                # Email already exists
+                return render_template('signup.html', error='Email already exist.')
+
             # if registration fails return response
             return render_template('signup.html', error=str(e))
     
