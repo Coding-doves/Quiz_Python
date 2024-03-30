@@ -285,7 +285,7 @@ def attempted_question_api():
     return jsonify({'questions': json_quiz})
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
     ''' uploads, retrieval, display, and editing user Profle page '''
     if 'logged_in' not in session or not session['logged_in']:
@@ -320,9 +320,22 @@ def profile():
     cursor.execute('''SELECT profile_image, banner_image FROM images WHERE user_id = %s''', (user_id,))
     images_data = cursor.fetchone()
 
-    return render_template('profile.html', profile_image=images_data[0], banner_image=images_data[1])
+    if images_data is None:
+        # When no images are found for the user
+        profile_image = None
+        banner_image = None
+    else:
+        # Extract profile and banner images from the retrieved data
+        profile_image = images_data[0]
+        banner_image = images_data[1]
+    
+    # Fetch user details from the database
+    cursor.execute('''SELECT first_name, last_name, username FROM users WHERE id = %s''', (user_id,))
+    user = cursor.fetchone()
 
+    return render_template('profile.html', user=user, profile_image=profile_image, banner_image=banner_image)
 
+    
 @app.route('/profile/image/<image_type>')
 def get_image(image_type):
     """Retrieve and display images"""
@@ -338,7 +351,10 @@ def get_image(image_type):
     cursor.execute(f'''SELECT {img_col} FROM images WHERE user_id = %s''', (user_id,))
     img_data = cursor.fetchone()[0]
 
-    return send_file(BytesIO(img_data), mimetype='image/jpeg')
+    if img_data and img_data[0]:
+        return send_file(BytesIO(img_data[0]), mimetype='image/jpeg')
+    else:
+        return "No Image not found"
 
 
 @app.route('/profile/edit', methods=['POST'])
@@ -353,11 +369,19 @@ def edit_profile():
         # retrieve details to edit from client side
         firstname = request.form.get('firstname')
         lastname = request.form.get('lastname')
-        username = request.form.get('lastname')
+        username = request.form.get('username')
 
         # Update user details to db
-        cursor.execute('''UPDATE users SET first_name = %s, lastname = %s, username = %s''',
-                        (firstname, lastname, username, user_id))
+        if firstname:
+            cursor.execute('''UPDATE users SET first_name = %s WHERE id = %s''',
+                            (firstname, user_id))
+        if lastname:
+            cursor.execute('''UPDATE users SET last_name = %s WHERE id = %s''',
+                            (lastname, user_id))
+        if username:
+            cursor.execute('''UPDATE users SET username = %s WHERE id = %s''',
+                            (username, user_id))
+
         db.commit()
 
     return redirect(url_for('profile'))

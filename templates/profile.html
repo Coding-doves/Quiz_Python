@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/css/header.css">
     <title>User Profile</title>
 </head>
 <body>
+    {% include 'header.html' %}
+
     <h1>User Profile</h1>
 
     <!-- Display profile image -->
@@ -23,22 +26,33 @@
     </form>
 
     <!-- Edit profile details form -->
+    <!-- First Name Form -->
     <form action="/profile/edit" method="post">
         <label for="firstname">First Name:</label>
         <input type="text" id="firstname" name="firstname" value="{{ user.first_name }}"><br>
+        <input type="submit" value="Update First Name">
+    </form>
+
+    <!-- Last Name Form -->
+    <form action="/profile/edit" method="post">
         <label for="lastname">Last Name:</label>
         <input type="text" id="lastname" name="lastname" value="{{ user.last_name }}"><br>
+        <input type="submit" value="Update Last Name">
+    </form>
+
+    <!-- Username Form -->
+    <form action="/profile/edit" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" value="{{ user.username }}"><br>
-        <input type="submit" value="Save Changes">
+        <input type="submit" value="Update Username">
     </form>
+
 
     <!-- Display profile details -->
     <div>
         <h2>Profile Details</h2>
-        <p><strong>First Name:</strong> {{ user.first_name }}</p>
-        <p><strong>Last Name:</strong> {{ user.last_name }}</p>
-        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Name:</strong> {{ user[0] }} {{ user[1] }}</p>
+        <p><strong>Username:</strong> {{ user[2] }}</p>
     </div>
 </body>
 </html>
