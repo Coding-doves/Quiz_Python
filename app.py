@@ -6,6 +6,9 @@ import mysql.connector
 from quiz import Quiz
 import random
 import os
+from others.db import connect_to_database
+from others.passwd_recovery import forgot_password_func, reset_password_func
+
 
 app = Flask(__name__)
 
@@ -16,12 +19,7 @@ print(secret_key)
 app.secret_key = secret_key
 
 # Connect to mysql db
-db = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    password='Ada.070#X',
-    database='quizapp'
-)
+db = connect_to_database()
 cursor =db.cursor()
 
 # Create tables if they don't exist
@@ -63,6 +61,14 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS images (
                   FOREIGN KEY (user_id) REFERENCES users(id)
                   )''')
 
+cursor.execute('''CREATE TABLE IF NOT EXISTS password_reset_tokens (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                reset_token VARCHAR(100) NOT NULL,
+                token_expiry DATETIME NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+                )''')
+
 db.commit()
 
 
@@ -96,9 +102,14 @@ def login():
 
     return render_template('login.html')
 
-def password_recovery_token():
-    '''generate random token'''
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    return forgot_password_func(request)
+
+
+@app.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    return reset_password_func(request)
 
 
 def generate_username_suggestions(username):
@@ -313,15 +324,15 @@ def attempted_question_api():
     json_quiz = []
     for row in quizzes:
         # Ensure all elements of the row are defined
-            quiz_data = {
-                "id": row[0],
-                "text": row[1],
-                "answer": [
-                    {"text": row[2], "correct": row[3] == row[2]},
-                    {"text": row[3], "correct": True}
-                ]
-            }
-            json_quiz.append(quiz_data)
+        quiz_data = {
+            "id": row[0],
+            "text": row[1],
+            "answer": [
+                {"text": row[2], "correct": row[3] == row[2]},
+                {"text": row[3], "correct": True}
+            ]
+        }
+        json_quiz.append(quiz_data)
 
     # Return the data as JSON and endpoint URL
     return jsonify({'questions': json_quiz})
