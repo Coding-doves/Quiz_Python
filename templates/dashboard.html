@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/header.css">
     <title>Dashboard</title>
 </head>
 <body>
     <main>
         <nav>
-            <a href="#"><p>LoGo</p></a>
-            <a href="/dashboard"><p class="active">{{ username }}'s Dashboard </p></a>
-            <a href="/quiz"><p>Quizzz It</p></a>
-            <a href="/profile"><p>My Profile</p></a>
-            <a href="/About"><p>About</p></a>
+            <a href="#"><img class="logos" src="/static/images/icon.png" alt=""></a>
+            <a href="/dashboard"><p class="active">{{ username }}'s Dashboard <img class="icons" src="/static/images/dashboard.png" alt=""></p></a>
+            <a href="/quiz"><p>Quizzz It <img class="icons" src="/static/images/quizzes.png" alt=""></p></a>
+            <a href="/profile"><p>My Profile <img class="icons" src="/static/images/account.png" alt=""></p></a>
+            <a href="/About"><p>About<img class="icons" src="/static/images/info.png" alt=""></p></a>
             <a href="/logout"><p>Logout</p></a>
             <a href="{{ api_endpoint }}"><p>Attempt Quiz API</p></a>
             <a href="/delete_acct"><p>Delete My Account</p></a>
@@ -21,7 +22,7 @@
 
         <div>
             <div class="dp">
-                <img class="displayPics" src="data:image/jpeg;base64,{{ profile_image }}" alt="Profile Image">
+                <img class="displayPic" src="data:image/jpeg;base64,{{ profile_image }}" alt="Profile Image">
             </div>
                         
             <h2>{{ username }}'s Dashboard</h2>
@@ -49,5 +50,8 @@
             </table>
         </div>
     </main>
+
+    {% include 'footer.html' %}
+
 </body>
 </html>

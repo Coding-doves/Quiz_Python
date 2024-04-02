@@ -87,6 +87,14 @@ This API documentation provides details on the Quiz App API endpoints for retrie
     }
     ```
 
+### ICONS from www.flaticon.com and https://iconscout.com
+- <a href="https://www.flaticon.com/free-icons/info" title="info icons">Info icons created by Chanut - Flaticon</a>
+- https://www.flaticon.com/authors/sumberrejeki/basic-outline?author_id=917&type=standard
+- https://www.flaticon.com/authors/freepik
+- <a href="https://www.flaticon.com/free-icons/quizzes" title="quizzes icons">Quizzes icons created by small.smiles - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/dashboard" title="dashboard icons">Dashboard icons created by Pixel perfect - Flaticon</a>
+- https://iconscout.com/contributors/icon-mafia
+- https://iconscout.com/contributors/unicons
 
 ### Contributions
 

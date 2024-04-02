@@ -5,11 +5,13 @@
     top: 0;
     left: 0;
     width: 100%;
+    display: flex;
+    justify-content: space-around;
     background: rgba(255, 255, 255, 0.15); /* Frosted glass effect */
     backdrop-filter: blur(10px); /* Blurring effect */
     -webkit-backdrop-filter: blur(10px); /* Safari */
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 ); /* Glass shadow */
-    padding: 13px;
+    padding: 10px;
     z-index: 9999;
     transition: background-color 0.3s ease; /* Smooth transition */
   }
@@ -34,11 +36,13 @@
   .menu a, .menu div:nth-child(1) {
     color: white;
     text-decoration: none;
-    font-size: larger;
     font-weight: 600;
-    padding: 10px 20px;
+    padding: 10px;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+  }
+  .menu a, .menu div:nth-child(2) section:nth-child(1){
+    line-height: 50px;
   }
   
   .menu a:hover {
@@ -53,3 +57,41 @@
     width: 3rem;
     border-radius: 20px;
   }
+  .logos{
+    height: 60px;
+    width: 60px;
+  }
+footer{ 
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  color: #FFF;
+  width: 100vw;
+}
+  footer div:nth-child(1){
+    height: 200px;
+    width: 100%;
+    background-color: rgba(0, 255, 255, 0.14);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+footer div:nth-child(1) h3{
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+footer div:nth-child(2) {
+  background-color: #000;
+  height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icons{
+  height: 18px;
+  padding: 10px;
+}

@@ -2,25 +2,25 @@ body {
     font-family: Arial, sans-serif;
     background-color: rgb(0, 0, 0);
     color: #f0f0f0;
+    overflow-x: hidden;
+}
+.whole{
     padding: 20px;
     display: flex;
     flex: 1;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     position: relative;
     margin-top: 9rem;
-    overflow-x: hidden;
 }
-
 main {
     background: linear-gradient(to right, rgba(75, 108, 183, 0.15), rgba(24, 40, 72, 0.6));
     backdrop-filter: blur(10px);
     border-radius: 10px;
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 ); /* Glass shadow */
     padding: 20px;
-    width: 50%;
+    width: 45%;
     margin: 10rem, 0 20px, 0;
 }
 
@@ -70,3 +70,9 @@ img {
     width: 100%;
     border-radius: 2rem;
 }
+.message {
+    text-align: center;
+    margin-bottom: 10px;
+    color: greenyellow;
+    font-weight: 700;
+  }

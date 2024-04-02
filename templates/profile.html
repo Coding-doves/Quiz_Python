@@ -10,54 +10,64 @@
 <body>
     {% include 'header.html' %}
 
-    <main>
-        <h1>User Profile</h1>
-
-        <!-- Display profile details -->
-        <div>
-            <h2>Profile Details</h2>
+    <div class="whole">
+        <main>
+            <h1>User Profile</h1>
+    
+            <!-- Display profile details -->
+            <div>
+                <h2>Profile Details:</h2>
+                
+                <p><strong>Name:</strong> {{ user[0] }} {{ user[1] }}</p>
+                <p><strong>Username:</strong> {{ user[2] }}</p>
+                <img class="sampleImage" src="data:image/jpeg;base64,{{ profile_image }}" alt="Profile Image">
+            </div>
+    
+            <h3>Edit Profile <img class="icons" src="/static/images/icons8-edit.gif" alt=""></h3>
+    
+            <!-- Display profile image -->
+            <form action="/profile" method="post" enctype="multipart/form-data">
+                <label for="profile_image">Upload Profile Image:</label>
+                <input type="file" name="profile_image">
+                <input type="submit" value="Upload Profile Image">
+            </form>
+            <br>
+            <!-- Edit profile details form -->
+            <!-- First Name Form -->
+            <form action="/profile" method="post">
+                <label for="firstname">First Name:</label>
+                <input type="text" id="firstname" name="firstname" value="{{ user.first_name }}"><br>
+                <input type="submit" value="Update First Name">
+            </form>
+            <br>
+    
+            <!-- Last Name Form -->
+            <form action="/profile" method="post">
+                <label for="lastname">Last Name:</label>
+                <input type="text" id="lastname" name="lastname" value="{{ user.last_name }}"><br>
+                <input type="submit" value="Update Last Name">
+            </form>
+            <br>
+    
+            <!-- Username Form -->
+            <form action="/profile" method="post">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="{{ user.username }}"><br>
+                <input type="submit" value="Update Username">
+            </form>
             
-            <p><strong>Name:</strong> {{ user[0] }} {{ user[1] }}</p>
-            <p><strong>Username:</strong> {{ user[2] }}</p>
-            <img class="sampleImage" src="data:image/jpeg;base64,{{ profile_image }}" alt="Profile Image">
+        </main>
+        <div class="pics">
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+            <img src="data:image/jpeg;base64,{{ profile_image }}" alt="Profile Image">
         </div>
-
-        <h3>Edit Profile <img class="icons" src="/static/images/icons8-edit.gif" alt=""></h3>
-
-        <!-- Display profile image -->
-        <form action="/profile" method="post" enctype="multipart/form-data">
-            <label for="profile_image">Upload Profile Image:</label>
-            <input type="file" name="profile_image">
-            <input type="submit" value="Upload Profile Image">
-        </form>
-        <br>
-        <!-- Edit profile details form -->
-        <!-- First Name Form -->
-        <form action="/profile" method="post">
-            <label for="firstname">First Name:</label>
-            <input type="text" id="firstname" name="firstname" value="{{ user.first_name }}"><br>
-            <input type="submit" value="Update First Name">
-        </form>
-        <br>
-
-        <!-- Last Name Form -->
-        <form action="/profile" method="post">
-            <label for="lastname">Last Name:</label>
-            <input type="text" id="lastname" name="lastname" value="{{ user.last_name }}"><br>
-            <input type="submit" value="Update Last Name">
-        </form>
-        <br>
-
-        <!-- Username Form -->
-        <form action="/profile" method="post">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="{{ user.username }}"><br>
-            <input type="submit" value="Update Username">
-        </form>
-
-    </main>
-    <div class="pics">
-        <img src="data:image/jpeg;base64,{{ profile_image }}" alt="Profile Image">
     </div>
+
+    {% include 'footer.html' %}
+    
+    <script src="static/js/script.js"></script>
+
 </body>
 </html>

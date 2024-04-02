@@ -359,13 +359,16 @@ def profile():
     
     user_id = session.get('user_id')
 
+    message = None
+
     if request.method == 'POST':
+       
         # retrieve details to edit from client side
         firstname = request.form.get('firstname')
         lastname = request.form.get('lastname')
         username = request.form.get('username')
         profile_image = request.files.get('profile_image')
-
+    
         print(profile_image)
         # Update user details to db
         if firstname:
@@ -392,14 +395,18 @@ def profile():
 
                     if existing_image:
                         cursor.execute('''UPDATE images SET profile_image = %s WHERE user_id = %s''', (profile_binary, user_id))
+                        message = "Profile image updated successfully"
                     else:
                         cursor.execute('''INSERT INTO images (user_id, profile_image) VALUES (%s, %s)''', (user_id, profile_binary))
+                        message = "Profile image added successfully"
                     db.commit()
                 except Exception as e:
                     print(f"An error occurred: {e}")
+                    message = "An error occurred: {e}"
                     return redirect(request.url)
             else:
                 print('Invalid file type')
+                message = "Invalid file type"
 
     # Fetch user details from the database
     cursor.execute('''SELECT first_name, last_name, username FROM users WHERE id = %s''', (user_id,))
@@ -412,7 +419,7 @@ def profile():
     if profile_image_data:
         profile_image = base64.b64encode(profile_image_data[0]).decode('utf-8')
 
-    return render_template('profile.html', user=user, profile_image=profile_image)
+    return render_template('profile.html', user=user, profile_image=profile_image, message=message)
 
 
 @app.route('/header_profile_image')
@@ -431,6 +438,12 @@ def header_profile_image():
         profile_image = base64.b64encode(profile_image_data[0]).decode('utf-8')
 
     return profile_image
+
+
+@app.route('/about')
+def about():
+    ''' display about page '''
+    return render_template('about.html')
 
 
 @app.route('/logout')
