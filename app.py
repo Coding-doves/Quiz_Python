@@ -102,6 +102,7 @@ def login():
 
     return render_template('login.html')
 
+
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     return forgot_password_func(request)
@@ -259,6 +260,13 @@ def dashboard():
     user_id = session.get('user_id')
     # print(user_id)
 
+     # Retrieve profile image from the database
+    cursor.execute("SELECT profile_image FROM images WHERE user_id = %s", (user_id,))
+    profile_image_data = cursor.fetchone()
+    profile_image = None
+    if profile_image_data:
+        profile_image = base64.b64encode(profile_image_data[0]).decode('utf-8')
+
     # Retrieve username
     cursor.execute('''SELECT username FROM users WHERE id = %s''', (user_id,))
     username = cursor.fetchone()[0]
@@ -281,6 +289,7 @@ def dashboard():
     return render_template(
         'dashboard.html',
         username=username,
+        profile_image=profile_image,
         quiz_metadata=quiz_metadata,
         api_endpoint=api_endpoint)
 
@@ -337,8 +346,10 @@ def attempted_question_api():
     # Return the data as JSON and endpoint URL
     return jsonify({'questions': json_quiz})
 
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -404,6 +415,24 @@ def profile():
     return render_template('profile.html', user=user, profile_image=profile_image)
 
 
+@app.route('/header_profile_image')
+def header_profile_image():
+    ''' Fetch and render the header with profile image '''
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+
+    # Retrieve profile image from the database
+    cursor.execute("SELECT profile_image FROM images WHERE user_id = %s", (user_id,))
+    profile_image_data = cursor.fetchone()
+    profile_image = None
+    if profile_image_data:
+        profile_image = base64.b64encode(profile_image_data[0]).decode('utf-8')
+
+    return profile_image
+
+
 @app.route('/logout')
 def logout():
     ''' end and clear sessions for logged in users '''
@@ -427,7 +456,12 @@ def delete_account():
     user_id = session.get('user_id')
 
     try:
+        # Delete user's attempted quizzes from quiz_attempted table
+        cursor.execute("DELETE FROM password_reset_tokens WHERE user_id = %s", (user_id,))
         
+        # Delete user's attempted quizzes from quiz_attempted table
+        cursor.execute("DELETE FROM images WHERE user_id = %s", (user_id,))
+
         # Delete user's attempted quizzes from quiz_attempted table
         cursor.execute("DELETE FROM quiz_attempted WHERE user_id = %s", (user_id,))
 

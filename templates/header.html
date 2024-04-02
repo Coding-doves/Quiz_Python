@@ -1,17 +1,32 @@
 <div class="menu" id="menu">
-    <section>
+    <div>
         <ul>
             <li><a href="#">LOGO</a></li>
         </ul>
-    </section>
-    <section>
-        <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/quiz">Quiz</a></li>
-            <li><a href="/About">About</a></li>
-            <li><a href="/profile">My profile</i></a></li>
-            <li><a href="/logout">Logout</a></li>
-        </ul>
-    </section>
- </div>
-  
+    </div>
+    <div>
+        <section>
+            <ul>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/quiz">Quiz</a></li>
+                <li><a href="/About">About</a></li>
+                <li><a href="/profile">My profile</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </section>
+        <section>
+            <ul>
+                <li><a href="/profile"><img class="displayPics" id="profile_image" src="" alt="Profile Image"></a></li>
+            </ul>
+        </section>
+    </div>
+</div>
+
+<script>
+    // Fetch profile image and update the <img> tag
+    fetch('/header_profile_image')
+        .then(response => response.text())
+        .then(profileImage => {
+            document.getElementById('profile_image').src = "data:image/jpeg;base64," + profileImage;
+        });
+</script>

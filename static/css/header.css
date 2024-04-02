@@ -30,8 +30,8 @@
   .menu li {
     margin: 0 10px;
   }
-  section:nth-child(1){font-size: 3rem;}
-  .menu a, section:nth-child(1) {
+  .menu div:nth-child(1){font-size: 3rem;}
+  .menu a, .menu div:nth-child(1) {
     color: white;
     text-decoration: none;
     font-size: larger;
@@ -44,4 +44,12 @@
   .menu a:hover {
     background-color: rgba(255, 255, 255, 0.1); /* Hover effect */
   }
-  
+  .menu div:nth-child(2){
+    display: flex;
+    justify-content: space-around;
+  }
+  .displayPics{
+    height: 3rem;
+    width: 3rem;
+    border-radius: 20px;
+  }
