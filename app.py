@@ -1,8 +1,7 @@
+import base64
 from io import BytesIO
-import string
-from flask import Flask, jsonify, render_template, request, redirect, url_for, session, send_file
+from flask import Flask, flash, jsonify, render_template, request, redirect, url_for, session, send_file
 import bcrypt
-import mysql.connector
 from quiz import Quiz
 import random
 import os
@@ -21,6 +20,8 @@ app.secret_key = secret_key
 # Connect to mysql db
 db = connect_to_database()
 cursor =db.cursor()
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Create tables if they don't exist
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (
@@ -56,8 +57,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_attempted (
 cursor.execute('''CREATE TABLE IF NOT EXISTS images (
                   id INT AUTO_INCREMENT PRIMARY KEY,
                   user_id INT,
-                  profile_image BLOB,
-                  banner_image BLOB,
+                  profile_image LONGBLOB,
                   FOREIGN KEY (user_id) REFERENCES users(id)
                   )''')
 
@@ -337,6 +337,8 @@ def attempted_question_api():
     # Return the data as JSON and endpoint URL
     return jsonify({'questions': json_quiz})
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -347,83 +349,13 @@ def profile():
     user_id = session.get('user_id')
 
     if request.method == 'POST':
-        # image uploads
-        profile_image = request.files['profile_image'] 
-        banner_image = request.files['banner_image'] 
-
-        # Convert images to binary data
-        profile_binary = profile_image.read()
-        banner_binary = banner_image.read()
-
-        # Update or insert image data into the db
-        cursor.execute('''SELECT * FROM images WHERE user_id = %s''', (user_id))
-        existing_image = cursor.fetchone()
-
-        if existing_image:
-            # if there is an existing image update it
-            cursor.execute('''UPDATE images SET profile_image = %s, banner_image = %s WHERE user_id = %s''',
-                            (profile_binary, banner_binary, user_id))
-        else:
-            # If there no existing image, insert image
-            cursor.execute('''INSERT INTO images (user_id, profile_image, banner_image) VALUES (%s, %s, %s)''',
-                           (user_id, profile_binary, banner_binary))
-        db.commit()
-
-    # Retrieve user's images
-    cursor.execute('''SELECT profile_image, banner_image FROM images WHERE user_id = %s''', (user_id,))
-    images_data = cursor.fetchone()
-
-    if images_data is None:
-        # When no images are found for the user
-        profile_image = None
-        banner_image = None
-    else:
-        # Extract profile and banner images from the retrieved data
-        profile_image = images_data[0]
-        banner_image = images_data[1]
-    
-    # Fetch user details from the database
-    cursor.execute('''SELECT first_name, last_name, username FROM users WHERE id = %s''', (user_id,))
-    user = cursor.fetchone()
-
-    return render_template('profile.html', user=user, profile_image=profile_image, banner_image=banner_image)
-
-    
-@app.route('/profile/image/<image_type>')
-def get_image(image_type):
-    """Retrieve and display images"""
-    if 'logged_in' not in session or not session['logged_in']:
-        return redirect(url_for('login'))
-    
-    user_id = session.get('user_id')
-
-    # Determine which image to retrieve
-    img_col = 'profile_image' if image_type == 'profile' else 'banner_image'
-
-    # retrieve img form db
-    cursor.execute(f'''SELECT {img_col} FROM images WHERE user_id = %s''', (user_id,))
-    img_data = cursor.fetchone()[0]
-
-    if img_data and img_data[0]:
-        return send_file(BytesIO(img_data[0]), mimetype='image/jpeg')
-    else:
-        return "No Image not found"
-
-
-@app.route('/profile/edit', methods=['POST'])
-def edit_profile():
-    ''' Edit user profile '''
-    if 'logged_in' not in session or not session['logged_in']:
-        return redirect(url_for('login'))
-    
-    user_id = session.get('user_id')
-
-    if request.method == 'POST':
         # retrieve details to edit from client side
         firstname = request.form.get('firstname')
         lastname = request.form.get('lastname')
         username = request.form.get('username')
+        profile_image = request.files.get('profile_image')
 
+        print(profile_image)
         # Update user details to db
         if firstname:
             cursor.execute('''UPDATE users SET first_name = %s WHERE id = %s''',
@@ -435,9 +367,41 @@ def edit_profile():
             cursor.execute('''UPDATE users SET username = %s WHERE id = %s''',
                             (username, user_id))
 
-        db.commit()
+        if profile_image:
+            if profile_image.filename == '':
+                print('No selected file')
+                return redirect(request.url)
 
-    return redirect(url_for('profile'))
+            if allowed_file(profile_image.filename):
+                try:
+                    profile_binary = profile_image.read()
+                    print(profile_binary)
+                    cursor.execute('''SELECT * FROM images WHERE user_id = %s''', (user_id,))
+                    existing_image = cursor.fetchone()
+
+                    if existing_image:
+                        cursor.execute('''UPDATE images SET profile_image = %s WHERE user_id = %s''', (profile_binary, user_id))
+                    else:
+                        cursor.execute('''INSERT INTO images (user_id, profile_image) VALUES (%s, %s)''', (user_id, profile_binary))
+                    db.commit()
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+                    return redirect(request.url)
+            else:
+                print('Invalid file type')
+
+    # Fetch user details from the database
+    cursor.execute('''SELECT first_name, last_name, username FROM users WHERE id = %s''', (user_id,))
+    user = cursor.fetchone()
+
+    # Retrieve profile image from the database
+    cursor.execute("SELECT profile_image FROM images WHERE user_id = %s", (user_id,))
+    profile_image_data = cursor.fetchone()
+    profile_image = None
+    if profile_image_data:
+        profile_image = base64.b64encode(profile_image_data[0]).decode('utf-8')
+
+    return render_template('profile.html', user=user, profile_image=profile_image)
 
 
 @app.route('/logout')

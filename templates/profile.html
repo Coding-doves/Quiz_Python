@@ -4,55 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/css/header.css">
+    <link rel="stylesheet" href="static/css/profile.css">
     <title>User Profile</title>
 </head>
 <body>
     {% include 'header.html' %}
 
-    <h1>User Profile</h1>
+    <main>
+        <h1>User Profile</h1>
 
-    <!-- Display profile image -->
-    <img src="{{ url_for('get_image', image_type='profile') }}" alt="Profile Image" width="200">
-    <form action="/profile" method="post" enctype="multipart/form-data">
-        <input type="file" name="profile_image">
-        <input type="submit" value="Upload Profile Image">
-    </form>
+        <!-- Display profile details -->
+        <div>
+            <h2>Profile Details</h2>
+            
+            <p><strong>Name:</strong> {{ user[0] }} {{ user[1] }}</p>
+            <p><strong>Username:</strong> {{ user[2] }}</p>
+            <img class="sampleImage" src="data:image/jpeg;base64,{{ profile_image }}" alt="Profile Image" width="200">
+        </div>
 
-    <!-- Display banner image -->
-    <img src="{{ url_for('get_image', image_type='banner') }}" alt="Banner Image" width="500">
-    <form action="/profile" method="post" enctype="multipart/form-data">
-        <input type="file" name="banner_image">
-        <input type="submit" value="Upload Banner Image">
-    </form>
+        <h3>Edit Profile <img class="icons" src="/static/images/icons8-edit.gif" alt=""></h3>
 
-    <!-- Edit profile details form -->
-    <!-- First Name Form -->
-    <form action="/profile/edit" method="post">
-        <label for="firstname">First Name:</label>
-        <input type="text" id="firstname" name="firstname" value="{{ user.first_name }}"><br>
-        <input type="submit" value="Update First Name">
-    </form>
+        <!-- Display profile image -->
+        <form action="/profile" method="post" enctype="multipart/form-data">
+            <label for="profile_image">Upload Profile Image:</label>
+            <input type="file" name="profile_image">
+            <input type="submit" value="Upload Profile Image">
+        </form>
+        <br>
+        <!-- Edit profile details form -->
+        <!-- First Name Form -->
+        <form action="/profile" method="post">
+            <label for="firstname">First Name:</label>
+            <input type="text" id="firstname" name="firstname" value="{{ user.first_name }}"><br>
+            <input type="submit" value="Update First Name">
+        </form>
+        <br>
 
-    <!-- Last Name Form -->
-    <form action="/profile/edit" method="post">
-        <label for="lastname">Last Name:</label>
-        <input type="text" id="lastname" name="lastname" value="{{ user.last_name }}"><br>
-        <input type="submit" value="Update Last Name">
-    </form>
+        <!-- Last Name Form -->
+        <form action="/profile" method="post">
+            <label for="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="lastname" value="{{ user.last_name }}"><br>
+            <input type="submit" value="Update Last Name">
+        </form>
+        <br>
 
-    <!-- Username Form -->
-    <form action="/profile/edit" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" value="{{ user.username }}"><br>
-        <input type="submit" value="Update Username">
-    </form>
+        <!-- Username Form -->
+        <form action="/profile" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{ user.username }}"><br>
+            <input type="submit" value="Update Username">
+        </form>
 
-
-    <!-- Display profile details -->
-    <div>
-        <h2>Profile Details</h2>
-        <p><strong>Name:</strong> {{ user[0] }} {{ user[1] }}</p>
-        <p><strong>Username:</strong> {{ user[2] }}</p>
+    </main>
+    <div class="pics">
+        <img src="data:image/jpeg;base64,{{ profile_image }}" alt="Profile Image" width="200">
     </div>
 </body>
 </html>

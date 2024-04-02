@@ -1,5 +1,6 @@
 /* Basic styles for menu/header */
 .menu {
+  font-family: Arial, sans-serif;
     position: fixed;
     top: 0;
     left: 0;
