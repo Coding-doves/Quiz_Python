@@ -374,13 +374,15 @@ def profile():
         if firstname:
             cursor.execute('''UPDATE users SET first_name = %s WHERE id = %s''',
                             (firstname, user_id))
+            db.commit()
         if lastname:
             cursor.execute('''UPDATE users SET last_name = %s WHERE id = %s''',
                             (lastname, user_id))
+            db.commit()
         if username:
             cursor.execute('''UPDATE users SET username = %s WHERE id = %s''',
                             (username, user_id))
-
+            db.commit()
         if profile_image:
             if profile_image.filename == '':
                 print('No selected file')
@@ -395,6 +397,7 @@ def profile():
 
                     if existing_image:
                         cursor.execute('''UPDATE images SET profile_image = %s WHERE user_id = %s''', (profile_binary, user_id))
+                        db.commit()
                         message = "Profile image updated successfully"
                     else:
                         cursor.execute('''INSERT INTO images (user_id, profile_image) VALUES (%s, %s)''', (user_id, profile_binary))
