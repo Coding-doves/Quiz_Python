@@ -21,18 +21,16 @@ app.secret_key = secret_key
 db = connect_to_database()
 cursor =db.cursor()
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Create tables if they don't exist
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                   id INT AUTO_INCREMENT PRIMARY KEY,
-                  first_name VARCHAR(255),
-                  last_name VARCHAR(255),
+                  first_name VARCHAR(255) NOT NULL,
+                  last_name VARCHAR(255) NOT NULL,
                   username VARCHAR(255) UNIQUE NOT NULL,
-                  password VARCHAR(255),
+                  password VARCHAR(255) NOT NULL,
                   email VARCHAR(255) UNIQUE NOT NULL
                   )''')
-
 cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_scores (
                   id INT AUTO_INCREMENT PRIMARY KEY,
                   user_id INT,
@@ -70,6 +68,8 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS password_reset_tokens (
                 )''')
 
 db.commit()
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -150,7 +150,7 @@ def signup():
         hashed_passwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         try:
             # insert new users into table
-            query = 'INSERT INTO users (first_name, last_name, username, password, email) VALUES (%s, %s, %s, %s)'
+            query = 'INSERT INTO users (first_name, last_name, username, password, email) VALUES (%s, %s, %s, %s, %s)'
             cursor.execute(query, (firstname, lastname, username, hashed_passwd, email))
             db.commit()
 

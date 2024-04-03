@@ -14,9 +14,9 @@
             <h2>Sign up</h2>
             {% if error %}
             <p class="message" style="color: red;">{{ error }}</p>
-            {% if suggestions %}
-            <span style="color: green;"> Suggestions: {{ suggestions }}</span><br>
-            {% endif %}
+                {% if suggestions %}
+                <span style="color: green;"> Suggestions: {{ suggestions }}</span><br>
+                {% endif %}
             {% endif %}
             <form action="/signup" method="POST">
                 <div class="input-group">
