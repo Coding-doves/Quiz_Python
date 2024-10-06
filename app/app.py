@@ -22,6 +22,10 @@ db = connect_to_database()
 cursor =db.cursor()
 
 
+# Create database if it doesn't exist
+cursor.execute("CREATE DATABASE IF NOT EXISTS quizapp")
+cursor.execute("USE quizapp")
+
 # Create tables if they don't exist
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,6 +72,8 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS password_reset_tokens (
                 )''')
 
 db.commit()
+cursor.close()
+db.close()
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
