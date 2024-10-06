@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Image CI for quizapp
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout code
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
     
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
@@ -23,7 +23,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag quiz-app-image:$(date +%s)
-
+      run: docker build ./app --file  /app/Dockerfile --tag quiz-app-image:$(date +%s)
+      
     - name: Push the Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/quiz-app-image:$(date +%s)
