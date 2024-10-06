@@ -23,7 +23,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         
     - name: Build the Docker image
-      run: docker build ./app --file  /app/Dockerfile --tag quiz-app-image:$(date +%s)
+      run: docker build ./app --file  ./app/Dockerfile --tag quiz-app-image:$(date +%s)
       
     - name: Push the Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/quiz-app-image:$(date +%s)
