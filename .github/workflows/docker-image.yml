@@ -21,7 +21,12 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           
       - name: Build the Docker image
-        run: docker build ./app --file ./app/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/quiz-app-image:${{ github.sha }}
+        run: |
+          docker build ./app --file ./app/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/quiz-app-image:${{ github.sha }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/quiz-app-image:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/quiz-app-image:latest
         
-      - name: Push the Docker image
+      - name: Push the Docker image (version tag)
         run: docker push ${{ secrets.DOCKER_USERNAME }}/quiz-app-image:${{ github.sha }}
+      
+      - name: Push the Docker image (latest tag)
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/quiz-app-image:latest
