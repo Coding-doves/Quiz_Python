@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN apt-get update && \
     apt-get install -y curl && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y && \
-    source $HOME/.cargo/env
+    . "$HOME/.cargo/env"
     
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip
