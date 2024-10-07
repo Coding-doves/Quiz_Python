@@ -7,6 +7,12 @@ WORKDIR /app
 # Copy only requirements.txt initially to install dependencies
 COPY requirements.txt .
 
+# Install Rust and Cargo
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+    source $HOME/.cargo/env
+    
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
