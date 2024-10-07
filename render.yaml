@@ -1,0 +1,10 @@
+version: 1
+
+services:
+  - type: web
+    name: my-quiz-app
+    env: docker
+    docker:
+      dockerfilePath: ./app/Dockerfile  # Path to the Dockerfile
+      contextPath: ./app  # Path to the folder that contains your application code
+    autoDeploy: true
