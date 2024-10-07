@@ -6,5 +6,5 @@ services:
     env: docker
     docker:
       dockerfilePath: ./app/Dockerfile  # Path to the Dockerfile
-      contextPath: ./app  # Path to the folder that contains your application code
+      contextPath: ./app
     autoDeploy: true
