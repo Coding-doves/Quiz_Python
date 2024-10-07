@@ -2,7 +2,7 @@ version: 1
 
 services:
   - type: web
-    name: Quiz-Python
+    name: Quiz_Python
     env: docker
     docker:
       dockerfilePath: ./app/Dockerfile  # Path to the Dockerfile
