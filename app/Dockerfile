@@ -36,4 +36,5 @@ EXPOSE 5000
 ENV FLASK_APP=app.py
 
 # Run the uWSGI server
-CMD ["uwsgi", "--http", "0.0.0.0:5000", "--wsgi-file", "app.py", "--callable", "app", "--processes", "4", "--threads", "2"]
+CMD ["uwsgi", "--http", ":5000", "--wsgi-file", "app.py", "--callable", "app", "--master", "--processes", "4", "--threads", "2", "--buffer-size", "16384"]
+# CMD ["uwsgi", "--http", "0.0.0.0:5000", "--wsgi-file", "app.py", "--callable", "app", "--processes", "4", "--threads", "2"]
