@@ -5,7 +5,7 @@ import bcrypt
 from quiz import Quiz
 import random
 import os
-from others.db import connect_to_database
+from db import connect_to_database
 from others.passwd_recovery import forgot_password_func, reset_password_func
 
 
