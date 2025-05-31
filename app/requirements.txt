@@ -51,7 +51,6 @@ Markdown==3.5.2
 MarkupSafe==2.1.4
 matplotlib-inline==0.1.6
 mistune==3.0.2
-ml-dtypes==0.2.0
 mysql-connector-python==9.0.0
 nbclient==0.9.0
 nbconvert==7.14.2
