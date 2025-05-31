@@ -3,8 +3,7 @@ version: 1
 services:
   - type: web
     name: Quiz_Python
-    env: docker
-    docker:
-      dockerfilePath: ./app/Dockerfile  # Path to the Dockerfile
-      contextPath: ./app
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
     autoDeploy: true
