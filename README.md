@@ -63,6 +63,8 @@ This API documentation provides details on the Quiz App API endpoints for retrie
 
 ### Questions API
 ---
+Extration from [Trivia](https://the-trivia-api.com/v2/questions)
+
 ### Endpoint: /questions
 - Method: GET
 - Description: Retrieve recent quiz questions and answers for the logged-in user.
