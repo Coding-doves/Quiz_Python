@@ -155,6 +155,9 @@ def signup():
         # encrypt the password
         hashed_passwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         try:
+            db = connect_to_database()
+            cursor =db.cursor()
+
             # insert new users into table
             query = 'INSERT INTO users (first_name, last_name, username, password, email) VALUES (%s, %s, %s, %s, %s)'
             cursor.execute(query, (firstname, lastname, username, hashed_passwd, email))
@@ -183,6 +186,12 @@ def signup():
             return render_template('signup.html', error=str(e))
     
     return render_template('signup.html')
+finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
 
 
 @app.route('/quiz')
