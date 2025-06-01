@@ -19,12 +19,11 @@ app.secret_key = secret_key
 
 # Connect to mysql db
 db = connect_to_database()
-cursor =db.cursor()
-
+cursor = db.cursor()
 
 # Create database if it doesn't exist
-cursor.execute("CREATE DATABASE IF NOT EXISTS quizapp")
-cursor.execute("USE quizapp")
+# cursor.execute(f"CREATE DATABASE IF NOT EXISTS {os.getenv("DB_NAME")}")
+cursor.execute(f"USE {os.getenv("DB_NAME")}")
 
 # Create tables if they don't exist
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (
@@ -82,29 +81,40 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def login():
     """Authenticating user """
     if request.method == 'POST':
-        data = request.form
-        username = data.get('username')
-        passwd = data.get('password')
+        try:
+            db = connect_to_database()
+            cursor =db.cursor()
+        
+            data = request.form
+            username = data.get('username')
+            passwd = data.get('password')
 
-        query = "SELECT id, password FROM users WHERE username = %s"
-        cursor.execute(query, (username,))
-        value = cursor.fetchone()
+            query = "SELECT id, password FROM users WHERE username = %s"
+            cursor.execute(query, (username,))
+            value = cursor.fetchone()
 
-        if value:
-            user_id, hashed_password = value
-            if bcrypt.checkpw(passwd.encode('utf-8'), hashed_password.encode('utf-8')):
-                # Set session variable for logged in user
-                session['user_id'] = user_id
-                session['username'] = username
-                session['logged_in'] = True
-                print('Valid user\n')
-                return redirect(url_for('quiz'))
+            if value:
+                user_id, hashed_password = value
+                if bcrypt.checkpw(passwd.encode('utf-8'), hashed_password.encode('utf-8')):
+                    # Set session variable for logged in user
+                    session['user_id'] = user_id
+                    session['username'] = username
+                    session['logged_in'] = True
+                    print('Valid user\n')
+                    return redirect(url_for('quiz'))
+                else:
+                    print('wrong password\n')
+                    return render_template('login.html', message="Wrong password")
             else:
-                print('wrong password\n')
-                return render_template('login.html', message="Wrong password")
-        else:
-            print("User don't exist\n")
-            return render_template('login.html', message="User not found")
+                print("User don't exist\n")
+                return render_template('login.html', message="User not found")
+        except Exception as e:
+                return render_template('login.html', error=str(e))
+        finally:
+            if cursor:
+                cursor.close()
+            if db:
+                db.close()
 
     return render_template('login.html')
 
@@ -132,6 +142,9 @@ def generate_username_suggestions(username):
 def signup():
     ''' creating a new user '''
     if request.method == 'POST':
+        db = connect_to_database()
+        cursor =db.cursor()
+
         data = request.form
         firstname = data.get('firstname')
         lastname = data.get('lastname')
@@ -154,10 +167,8 @@ def signup():
 
         # encrypt the password
         hashed_passwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        try:
-            db = connect_to_database()
-            cursor =db.cursor()
 
+        try:
             # insert new users into table
             query = 'INSERT INTO users (first_name, last_name, username, password, email) VALUES (%s, %s, %s, %s, %s)'
             cursor.execute(query, (firstname, lastname, username, hashed_passwd, email))
@@ -185,33 +196,39 @@ def signup():
             # if registration fails return response
             return render_template('signup.html', error=str(e))
     
-    return render_template('signup.html')
-finally:
+        finally:
             if cursor:
                 cursor.close()
-            if conn:
-                conn.close()
+            if db:
+                db.close()
 
+    return render_template('signup.html')
 
 
 @app.route('/quiz')
 def quiz():
-    ''' output to browser '''
-    if 'logged_in' not in session or not session['logged_in']:
-        return redirect(url_for('login'))
+    try:
+        ''' output to browser '''
+        if 'logged_in' not in session or not session['logged_in']:
+            return redirect(url_for('login'))
 
-    # api endpoint
-    api_url = "https://the-trivia-api.com/v2/questions"
+        # api endpoint
+        api_url = "https://the-trivia-api.com/v2/questions"
 
-    # create Quiz instance
-    quiz = Quiz(api_url)
-    random.shuffle(quiz.questions)
-    # print("Quiz Questions:", quiz.questions)
+        # create Quiz instance
+        quiz = Quiz(api_url)
+        random.shuffle(quiz.questions)
+        # print("Quiz Questions:", quiz.questions)
+    except Exception as e:
+        render_template('quiz.html', error=str(e))
     return render_template('quiz.html', questions=quiz.questions)
 
 
 @app.route('/submit', methods=['POST'])
 def submit():
+    db = connect_to_database()
+    cursor =db.cursor()
+
     ''' handle form returned data '''
     if 'logged_in' not in session or not session['logged_in']:
         return redirect(url_for('login'))
@@ -259,6 +276,8 @@ def submit():
                               VALUES (%s, %s, %s, %s, %s)''', (user_id, attempt['question'], attempt['user_answer'], attempt['correct_answer'], quiz_score_id))
 
     db.commit()
+    cursor.close()
+    db.close()
 
     return render_template('result.html',
         score=score,
@@ -268,6 +287,9 @@ def submit():
 
 @app.route('/dashboard')
 def dashboard():
+    db = connect_to_database()
+    cursor =db.cursor()
+
     ''' display users personal data '''
     if 'logged_in' not in session or not session['logged_in']:
         return redirect(url_for('login'))
@@ -301,6 +323,9 @@ def dashboard():
     
     api_endpoint = request.url_root + url_for('attempted_question_api')
     
+    cursor.close()
+    db.close()
+    
     return render_template(
         'dashboard.html',
         username=username,
@@ -311,6 +336,9 @@ def dashboard():
 
 @app.route('/view_quiz/<int:quiz_score_id>')
 def view_quiz(quiz_score_id):
+    db = connect_to_database()
+    cursor =db.cursor()
+
     """display specific quiz data"""
     if 'logged_in' not in session or not session['logged_in']:
         return redirect(url_for('login'))
@@ -325,11 +353,16 @@ def view_quiz(quiz_score_id):
     # Convert quiz_metadata tuples to dictionaries for easier access
     quiz_metadata = [{'question': row[0], 'user_answer': row[1], 'correct_answer': row[2]} for row in quizzes]
 
+    cursor.close()
+    db.close()
     return render_template('view_quiz.html', quizzes=quiz_metadata)
 
 
 @app.route('/questions')
 def attempted_question_api():
+    db = connect_to_database()
+    cursor =db.cursor()
+
     """Retrieve latest 20 attempted_quiz data in JSON"""
     if 'logged_in' not in session or not session['logged_in']:
         return redirect(url_for('login'))
@@ -358,6 +391,9 @@ def attempted_question_api():
         }
         json_quiz.append(quiz_data)
 
+    cursor.close()
+    db.close()
+
     # Return the data as JSON and endpoint URL
     return jsonify({'questions': json_quiz})
 
@@ -368,6 +404,9 @@ def allowed_file(filename):
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
+    db = connect_to_database()
+    cursor =db.cursor()
+
     ''' uploads, retrieval, display, and editing user Profle page '''
     if 'logged_in' not in session or not session['logged_in']:
         return redirect(url_for('login'))
@@ -437,11 +476,17 @@ def profile():
     if profile_image_data:
         profile_image = base64.b64encode(profile_image_data[0]).decode('utf-8')
 
+    cursor.close()
+    db.close()
+
     return render_template('profile.html', user=user, profile_image=profile_image, message=message)
 
 
 @app.route('/header_profile_image')
 def header_profile_image():
+    db = connect_to_database()
+    cursor =db.cursor()
+
     ''' Fetch and render the header with profile image '''
     if 'logged_in' not in session or not session['logged_in']:
         return redirect(url_for('login'))
@@ -454,6 +499,9 @@ def header_profile_image():
     profile_image = None
     if profile_image_data:
         profile_image = base64.b64encode(profile_image_data[0]).decode('utf-8')
+
+    cursor.close()
+    db.close()
 
     return profile_image
 
@@ -480,6 +528,9 @@ def delete_acct():
 
 @app.route('/delete_account', methods=['GET', 'POST'])
 def delete_account():
+    db = connect_to_database()
+    cursor =db.cursor()
+    
     """Delete user account"""
     if 'logged_in' not in session or not session['logged_in']:
         return redirect(url_for('login'))
@@ -513,6 +564,9 @@ def delete_account():
         # If an error occurs, rollback changes and render an error message
         db.rollback()
         return render_template('delete_acct.html', error=str(e))
+    finally:
+        cursor.close()
+        db.close()
 
 
 if __name__ == '__main__':
