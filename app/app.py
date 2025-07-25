@@ -52,7 +52,7 @@ def login():
                     session['logged_in'] = True
                     print('Valid user\n')
                     session['logged_in'] = True
-                    return redirect(url_for('dashboard'))
+                    return redirect(url_for('quiz'))
                 else:
                     print('wrong password\n')
                     return render_template('login.html', message="Wrong password")
