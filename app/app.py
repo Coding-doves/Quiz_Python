@@ -163,7 +163,7 @@ def quiz():
         quiz = Quiz(api_url)
         random.shuffle(quiz.questions)
         # print("Quiz Questions:", quiz.questions)
-         return render_template('quiz.html', questions=quiz.questions)
+        return render_template('quiz.html', questions=quiz.questions)
     except Exception as e:
         render_template('quiz.html', error=str(e))
 
