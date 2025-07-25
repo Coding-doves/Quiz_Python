@@ -29,9 +29,6 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 @app.route("/", methods=['GET', 'POST'])
 def login():
     """Authenticating user """
-    print("Entered login route")  # Always prints
-    print("Request method:", request.method)
-
     if request.method == 'POST':
         try:
             db = connect_to_database()
@@ -40,19 +37,15 @@ def login():
             data = request.form
             username = data.get('username')
             passwd = data.get('password')
-            print("Form username:", username)
-            print("Form password:", passwd)
 
             query = "SELECT id, password FROM users WHERE username = %s"
             cursor.execute(query, (username,))
             value = cursor.fetchone()
 
             if value:
-                print("DB value:", value)
                 user_id, hashed_password = value
 
                 if bcrypt.checkpw(passwd.encode('utf-8'), hashed_password.encode('utf-8')):
-                    print("Password correct")
                     # Set session variable for logged in user
                     session['user_id'] = user_id
                     session['username'] = username
