@@ -13,7 +13,6 @@ app = Flask(__name__)
 
 # Generate a random secret key
 secret_key = os.urandom(24)
-print(secret_key)
 # Set the secret key for session
 app.secret_key = secret_key
 
