@@ -39,12 +39,15 @@ def login():
             data = request.form
             username = data.get('username')
             passwd = data.get('password')
+            print("Form username:", username)
+            print("Form password:", passwd)
 
             query = "SELECT id, password FROM users WHERE username = %s"
             cursor.execute(query, (username,))
             value = cursor.fetchone()
 
             if value:
+                print("DB value:", value)
                 user_id, hashed_password = value
                 if bcrypt.checkpw(passwd.encode('utf-8'), hashed_password.encode('utf-8')):
                     # Set session variable for logged in user
@@ -53,7 +56,7 @@ def login():
                     session['logged_in'] = True
                     print('Valid user\n')
                     session['logged_in'] = True
-                    return redirect(url_for('quiz'))
+                    return redirect(url_for('dashboard'))
                 else:
                     print('wrong password\n')
                     return render_template('login.html', message="Wrong password")
