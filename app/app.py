@@ -5,73 +5,18 @@ import bcrypt
 from quiz import Quiz
 import random
 import os
-from db import connect_to_database
+from db import connect_to_database, create_database_if_not_exists, initialize_tables
 from others.passwd_recovery import forgot_password_func, reset_password_func
 
 
 app = Flask(__name__)
+create_database_if_not_exists()  # ensure DB exists
+initialize_tables()              # ensure tables exist
 
 # Generate a random secret key
 secret_key = os.urandom(24)
 # Set the secret key for session
 app.secret_key = secret_key
-
-# Connect to mysql db
-db = connect_to_database()
-cursor = db.cursor()
-
-# Create database if it doesn't exist
-# cursor.execute(f"CREATE DATABASE IF NOT EXISTS {os.getenv("DB_NAME")}")
-cursor.execute(f"USE {os.getenv("DB_NAME")}")
-
-# Create tables if they don't exist
-cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-                  id INT AUTO_INCREMENT PRIMARY KEY,
-                  first_name VARCHAR(255) NOT NULL,
-                  last_name VARCHAR(255) NOT NULL,
-                  username VARCHAR(255) UNIQUE NOT NULL,
-                  password VARCHAR(255) NOT NULL,
-                  email VARCHAR(255) UNIQUE NOT NULL
-                  )''')
-cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_scores (
-                  id INT AUTO_INCREMENT PRIMARY KEY,
-                  user_id INT,
-                  score INT,
-                  total_questions INT,
-                  quiz_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                  FOREIGN KEY (user_id) REFERENCES users(id)
-                  )''')
-
-cursor.execute('''CREATE TABLE IF NOT EXISTS quiz_attempted (
-                  id INT AUTO_INCREMENT PRIMARY KEY,
-                  user_id INT,
-                  quiz_score_id INT, 
-                  question VARCHAR(255),
-                  user_answer VARCHAR(255),
-                  correct_answer VARCHAR(255),
-                  quiz_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                  FOREIGN KEY (user_id) REFERENCES users(id),
-                  FOREIGN KEY (quiz_score_id) REFERENCES quiz_scores(id)
-                  )''')
-
-cursor.execute('''CREATE TABLE IF NOT EXISTS images (
-                  id INT AUTO_INCREMENT PRIMARY KEY,
-                  user_id INT,
-                  profile_image LONGBLOB,
-                  FOREIGN KEY (user_id) REFERENCES users(id)
-                  )''')
-
-cursor.execute('''CREATE TABLE IF NOT EXISTS password_reset_tokens (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
-                reset_token VARCHAR(100) NOT NULL,
-                token_expiry DATETIME NOT NULL,
-                FOREIGN KEY (user_id) REFERENCES users(id)
-                )''')
-
-db.commit()
-cursor.close()
-db.close()
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
