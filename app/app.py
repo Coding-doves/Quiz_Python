@@ -51,8 +51,7 @@ def login():
                 print("DB value:", value)
                 user_id, hashed_password = value
 
-                hashed_bytes = binascii.unhexlify(hashed_password[2:] if hashed_password.startswith('\\x') else hashed_password)
-                if bcrypt.checkpw(passwd.encode('utf-8'), hashed_bytes):
+                if bcrypt.checkpw(passwd.encode('utf-8'), hashed_password.encode('utf-8')):
                     print("Password correct")
                     # Set session variable for logged in user
                     session['user_id'] = user_id
@@ -125,7 +124,8 @@ def signup():
             return render_template('signup.html', error='Username already exist.', suggestions=suggestions)
 
         # encrypt the password
-        hashed_passwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        # hashed_passwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        hashed_passwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
         try:
             # insert new users into table
