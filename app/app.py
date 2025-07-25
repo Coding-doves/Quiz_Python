@@ -18,6 +18,10 @@ secret_key = os.urandom(24)
 # Set the secret key for session
 app.secret_key = secret_key
 
+app.config['SESSION_COOKIE_SECURE'] = True  # Ensures cookies only work over HTTPS
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Helps with cross-site requests
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevents JS from accessing cookies
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
