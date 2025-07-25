@@ -1,4 +1,5 @@
 import base64
+import binascii
 from io import BytesIO
 from flask import Flask, flash, jsonify, render_template, request, redirect, url_for, session, send_file
 import bcrypt
@@ -49,7 +50,10 @@ def login():
             if value:
                 print("DB value:", value)
                 user_id, hashed_password = value
-                if bcrypt.checkpw(passwd.encode('utf-8'), hashed_password.encode('utf-8')):
+
+                hashed_bytes = binascii.unhexlify(hashed_password[2:] if hashed_password.startswith('\\x') else hashed_password)
+                if bcrypt.checkpw(passwd.encode('utf-8'), hashed_bytes):
+                    print("Password correct")
                     # Set session variable for logged in user
                     session['user_id'] = user_id
                     session['username'] = username
