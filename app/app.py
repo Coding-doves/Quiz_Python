@@ -28,6 +28,9 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 @app.route("/", methods=['GET', 'POST'])
 def login():
     """Authenticating user """
+    print("Entered login route")  # Always prints
+    print("Request method:", request.method)
+
     if request.method == 'POST':
         try:
             db = connect_to_database()
