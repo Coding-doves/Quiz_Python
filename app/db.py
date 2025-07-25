@@ -1,9 +1,9 @@
 import os
-import psycopg2
+import psycopg
 
 
 def connect_to_database():
-    conn = psycopg2.connect(
+    conn = psycopg.connect(
         host=os.getenv("DB_HOST"),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
@@ -17,7 +17,7 @@ def create_database_if_not_exists():
     db_name = os.getenv("DB_NAME")
 
     # Connect to default 'postgres' database
-    conn = psycopg2.connect(
+    conn = psycopg.connect(
         dbname=os.getenv("DB_NAME"),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
