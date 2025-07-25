@@ -49,6 +49,7 @@ def login():
                     session['username'] = username
                     session['logged_in'] = True
                     print('Valid user\n')
+                    session['logged_in'] = True
                     return redirect(url_for('quiz'))
                 else:
                     print('wrong password\n')
@@ -157,6 +158,7 @@ def signup():
 def quiz():
     try:
         ''' output to browser '''
+        print("Logged in status:", session.get('logged_in'))
         if 'logged_in' not in session or not session['logged_in']:
             return redirect(url_for('login'))
 
